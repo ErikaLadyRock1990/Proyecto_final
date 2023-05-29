@@ -7,6 +7,7 @@ from datetime import date
 
 bp = Blueprint("api_biblioteca", __name__)
 
+DIAS_DE_PRESTAMO = 31
 
 @bp.route("/")
 def index():
@@ -160,8 +161,6 @@ def actualizar_cliente():
 
 @bp.route("/nuevo-prestamo", methods=["POST"])
 def nuevo_prestamo():
-    DIAS_DE_PRESTAMO = 31
-
     id_cliente = request.json.get("id_cliente")
     id_libro = request.json.get("id_libro")
 
@@ -189,8 +188,6 @@ def nuevo_prestamo():
 
 @bp.route("/buscar-prestamo", methods=["GET"])
 def buscar_prestamos():
-    DIAS_DE_PRESTAMO = 31
-
     dni = request.json.get("dni")
 
     prestamos = BorrowService.buscar_prestamo(dni)
