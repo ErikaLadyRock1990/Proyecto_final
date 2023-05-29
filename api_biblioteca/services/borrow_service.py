@@ -1,0 +1,26 @@
+from api_biblioteca.models import Prestamo, Libro, Cliente, db
+from .book_service import BookService
+from .client_service import ClientService
+
+
+class BorrowService:
+    @staticmethod
+    def nuevo_prestamo(id_cliente, id_libro):
+        clientes = ClientService.buscar_cliente(id_cliente)
+        libros = BookService.buscar_libro(id_libro)
+        
+        if not clientes or not libros:
+            return None
+
+        prestamo_nuevo = Prestamo(
+            id_libro=libros[0].id,
+            id_cliente=clientes[0].id,
+            titulo=libros[0].titulo,
+            nombre=clientes[0].nombre,
+        )
+        db.session.add(prestamo_nuevo)
+        db.session.commit()
+
+        prestamo = Prestamo.query.get(prestamo_nuevo.id)
+
+        return prestamo

@@ -9,9 +9,11 @@ class ClientService:
         db.session.commit()
 
     @staticmethod
-    def buscar_clientes(dni=None, nombre=None, telefono=None):
+    def buscar_cliente(id=None, dni=None, nombre=None, telefono=None):
         query = Cliente.query  # Inicializar la consulta con todos los clientes
 
+        if id:
+            query = query.filter(Cliente.id.ilike(f"%{id}%"))
         if dni:
             query = query.filter(Cliente.dni.ilike(f"%{dni}%"))
         if nombre:

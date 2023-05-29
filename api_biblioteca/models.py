@@ -32,6 +32,7 @@ class Prestamo(db.Model):
     id_cliente = db.Column(db.Integer, db.ForeignKey("cliente.id"), nullable=False)
     titulo = db.Column(db.String(100), nullable=False)
     nombre = db.Column(db.String(100), nullable=False)
+    devuelto = db.Column(db.Boolean, nullable=False, default=False)
     fecha_prestamo = db.Column(
         db.Date, nullable=False, default=datetime.datetime.utcnow
     )

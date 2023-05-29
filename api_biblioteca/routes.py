@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, request
 from .models import *
 from .services.book_service import BookService
 from .services.client_service import ClientService
+from .services.borrow_service import BorrowService
+from datetime import date
 
 bp = Blueprint("api_biblioteca", __name__)
 
@@ -25,13 +27,14 @@ def guardar_libro():
 
 @bp.route("/buscar-libro", methods=["GET"])
 def buscar_libro():
+    id = request.json.get("id")
     titulo = request.json.get("titulo")
     autor = request.json.get("autor")
     genero = request.json.get("genero")
     año = request.json.get("año")
 
-    libros = BookService.buscar_libros(
-        titulo=titulo, autor=autor, genero=genero, año=año
+    libros = BookService.buscar_libro(
+        id=id, titulo=titulo, autor=autor, genero=genero, año=año
     )
 
     libros_json = []
@@ -97,11 +100,14 @@ def guardar_cliente():
 
 @bp.route("/buscar-cliente", methods=["GET"])
 def buscar_cliente():
+    id = request.json.get("id")
     dni = request.json.get("dni")
     nombre = request.json.get("nombre")
     telefono = request.json.get("telefono")
 
-    clientes = ClientService.buscar_clientes(dni=dni, nombre=nombre, telefono=telefono)
+    clientes = ClientService.buscar_cliente(
+        id=id, dni=dni, nombre=nombre, telefono=telefono
+    )
 
     clientes_json = []
     for cliente in clientes:
@@ -139,14 +145,44 @@ def actualizar_cliente():
     nombre = request.json.get("nombre")
     telefono = request.json.get("telefono")
 
-    cliente = ClientService.actualizar_cliente(id, dni=dni, nombre=nombre, telefono=telefono)
-   
+    cliente = ClientService.actualizar_cliente(
+        id, dni=dni, nombre=nombre, telefono=telefono
+    )
+
     cliente_json = {
         "dni": cliente.dni,
         "nombre": cliente.nombre,
-        "telefono": cliente.telefono
-        
-        
+        "telefono": cliente.telefono,
     }
 
     return jsonify(cliente_json)
+
+
+@bp.route("/nuevo-prestamo", methods=["POST"])
+def nuevo_prestamo():
+    DIAS_DE_PRESTAMO = 31
+    
+    id_cliente = request.json.get("id_cliente")
+    id_libro = request.json.get("id_libro")
+
+    prestamo = BorrowService.nuevo_prestamo(id_cliente, id_libro)
+
+    fecha_actual = date.today()
+    duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
+
+    prestamo_json = {
+        "id": prestamo.id,
+        "id_cliente": prestamo.id_cliente,
+        "id_libro": prestamo.id_libro,
+        "titulo": prestamo.titulo,
+        "nombre_cliente": prestamo.nombre,
+        "devuelto": prestamo.devuelto,
+        "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
+        "dias_restantes": DIAS_DE_PRESTAMO - duracion_del_prestamo,
+    }
+
+    return jsonify(prestamo_json)
+
+@bp.route("/nuevo-prestamo", methods=["GET"])
+def buscar_prestamo():
+    return None

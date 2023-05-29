@@ -10,10 +10,13 @@ def create_app():
 
     db.init_app(app)
     
+    
     with app.app_context():
         from api_biblioteca.routes import bp
         from api_biblioteca.models import Cliente, Prestamo
         app.register_blueprint(bp)
+        # Descomentar para resetear la bbdd
+        # db.drop_all()
         db.create_all()
 
     return app

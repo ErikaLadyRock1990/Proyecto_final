@@ -9,9 +9,11 @@ class BookService:
         db.session.commit()
 
     @staticmethod
-    def buscar_libros(titulo=None, autor=None, genero=None, año=None):
+    def buscar_libro(id=None, titulo=None, autor=None, genero=None, año=None):
         query = Libro.query
 
+        if id:
+            query = query.filter(Libro.id.ilike(f"%{id}%"))
         if titulo:
             query = query.filter(Libro.titulo.ilike(f"%{titulo}%"))
         if autor:
