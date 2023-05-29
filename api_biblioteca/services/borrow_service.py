@@ -6,10 +6,14 @@ from .client_service import ClientService
 class BorrowService:
     @staticmethod
     def nuevo_prestamo(id_cliente, id_libro):
-        clientes = ClientService.buscar_cliente(id_cliente)
-        libros = BookService.buscar_libro(id_libro)
-        
-        if not clientes or not libros:
+        clientes = ClientService.buscar_clientes(id_cliente)
+        libros = BookService.buscar_libros(id_libro)
+
+        libro_prestado = Prestamo.query.filter_by(
+            id_libro=id_libro, devuelto=False
+        ).first()
+
+        if not clientes or not libros or libro_prestado:
             return None
 
         prestamo_nuevo = Prestamo(
@@ -24,3 +28,16 @@ class BorrowService:
         prestamo = Prestamo.query.get(prestamo_nuevo.id)
 
         return prestamo
+
+    @staticmethod
+    def buscar_prestamo(dni):
+        clientes = ClientService.buscar_clientes(None, dni, None, None)
+
+        prestamos = None
+
+        if len(clientes) > 0:
+            prestamos = (
+                Prestamo.query.join(Cliente).filter(Cliente.dni.ilike(f"%{dni}%")).all()
+            )
+
+        return prestamos

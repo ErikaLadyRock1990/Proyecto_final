@@ -9,7 +9,7 @@ class BookService:
         db.session.commit()
 
     @staticmethod
-    def buscar_libro(id=None, titulo=None, autor=None, genero=None, año=None):
+    def buscar_libros(id=None, titulo=None, autor=None, genero=None, año=None):
         query = Libro.query
 
         if id:

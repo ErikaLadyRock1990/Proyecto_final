@@ -26,14 +26,14 @@ def guardar_libro():
 
 
 @bp.route("/buscar-libro", methods=["GET"])
-def buscar_libro():
+def buscar_libros():
     id = request.json.get("id")
     titulo = request.json.get("titulo")
     autor = request.json.get("autor")
     genero = request.json.get("genero")
     año = request.json.get("año")
 
-    libros = BookService.buscar_libro(
+    libros = BookService.buscar_libros(
         id=id, titulo=titulo, autor=autor, genero=genero, año=año
     )
 
@@ -99,13 +99,13 @@ def guardar_cliente():
 
 
 @bp.route("/buscar-cliente", methods=["GET"])
-def buscar_cliente():
+def buscar_clientes():
     id = request.json.get("id")
     dni = request.json.get("dni")
     nombre = request.json.get("nombre")
     telefono = request.json.get("telefono")
 
-    clientes = ClientService.buscar_cliente(
+    clientes = ClientService.buscar_clientes(
         id=id, dni=dni, nombre=nombre, telefono=telefono
     )
 
@@ -161,11 +161,14 @@ def actualizar_cliente():
 @bp.route("/nuevo-prestamo", methods=["POST"])
 def nuevo_prestamo():
     DIAS_DE_PRESTAMO = 31
-    
+
     id_cliente = request.json.get("id_cliente")
     id_libro = request.json.get("id_libro")
 
     prestamo = BorrowService.nuevo_prestamo(id_cliente, id_libro)
+
+    if not prestamo:
+        return jsonify({"Error": "El libro o el cliente no están disponibles"})
 
     fecha_actual = date.today()
     duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
@@ -183,6 +186,33 @@ def nuevo_prestamo():
 
     return jsonify(prestamo_json)
 
-@bp.route("/nuevo-prestamo", methods=["GET"])
-def buscar_prestamo():
-    return None
+
+@bp.route("/buscar-prestamo", methods=["GET"])
+def buscar_prestamos():
+    DIAS_DE_PRESTAMO = 31
+
+    dni = request.json.get("dni")
+
+    prestamos = BorrowService.buscar_prestamo(dni)
+
+    if not prestamos:
+        return jsonify({"Error": "No hay préstamos"})
+
+    prestamos_json = []
+    
+    for prestamo in prestamos:
+        fecha_actual = date.today()
+        duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
+        prestamo_json = {
+            "id": prestamo.id,
+            "id_cliente": prestamo.id_cliente,
+            "id_libro": prestamo.id_libro,
+            "titulo": prestamo.titulo,
+            "nombre_cliente": prestamo.nombre,
+            "devuelto": prestamo.devuelto,
+            "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
+            "dias_restantes": DIAS_DE_PRESTAMO - duracion_del_prestamo,
+        }
+        prestamos_json.append(prestamo_json)
+
+    return jsonify(prestamos_json)
