@@ -39,6 +39,9 @@ def buscar_libros():
         id=id, titulo=titulo, autor=autor, genero=genero, año=año
     )
 
+    if len(libros) == 0:
+        return jsonify({"Mensaje": "No se han encontrado clentes"})
+
     libros_json = []
     for libro in libros:
         libro_json = {
@@ -111,6 +114,9 @@ def buscar_clientes():
         id=id, dni=dni, nombre=nombre, telefono=telefono
     )
 
+    if len(clientes) == 0:
+        return jsonify({"Mensaje": "No se han encontrado clentes"})
+
     clientes_json = []
     for cliente in clientes:
         libro_json = {
@@ -121,17 +127,15 @@ def buscar_clientes():
         }
         clientes_json.append(libro_json)
 
-    # Puedes retornar los clientes en un formato adecuado, como JSON
     return jsonify(clientes_json)
 
 
 @bp.route("/borrar-cliente", methods=["POST"])
 def borrar_cliente():
-    id = request.json.get("id")  # Obtener el valor del campo "id" del JSON
+    id = request.json.get("id")
     if not id:
         return jsonify({"mensaje": "Cliente no encontrado"}), 400
 
-    # Intentar borrar el libro utilizando el ID
     cliente_borrado = ClientService.borrar_cliente(id)
 
     if cliente_borrado:
@@ -201,6 +205,11 @@ def buscar_prestamos():
     for prestamo in prestamos:
         fecha_actual = date.today()
         duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
+        dias_restantes = 0
+
+        if prestamo.devuelto == False:
+            dias_restantes = DIAS_DE_PRESTAMO - duracion_del_prestamo
+
         prestamo_json = {
             "id": prestamo.id,
             "id_cliente": prestamo.id_cliente,
@@ -209,7 +218,7 @@ def buscar_prestamos():
             "nombre_cliente": prestamo.nombre,
             "devuelto": prestamo.devuelto,
             "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
-            "dias_restantes": DIAS_DE_PRESTAMO - duracion_del_prestamo,
+            "dias_restantes": dias_restantes,
         }
         prestamos_json.append(prestamo_json)
 

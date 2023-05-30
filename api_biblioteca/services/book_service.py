@@ -28,21 +28,20 @@ class BookService:
 
     @staticmethod
     def borrar_libro(id):
-        libro = Libro.query.get(id)  # Buscar el libro por su ID
-
+        libro = Libro.query.get(id)
         if libro:
-            db.session.delete(libro)  # Eliminar el libro de la base de datos
-            db.session.commit()  # Confirmar los cambios en la base de datos
-            return True  # Indicar que se borró el libro con éxito
+            db.session.delete(libro)
+            db.session.commit()
+            return True
         else:
-            return False  # Indicar que no se encontró el libro con el ID especificado
+            return False
 
     @staticmethod
     def actualizar_libro(id, titulo=None, autor=None, genero=None, año=None):
-        libro = Libro.query.get(id)  # Buscar el libro por su ID
+        libro = Libro.query.get(id)
 
         if not libro:
-            return None  # Devolver None si no se encuentra el libro
+            return None
 
         if titulo:
             libro.titulo = titulo
@@ -53,6 +52,6 @@ class BookService:
         if año:
             libro.año = año
 
-        db.session.commit()  # Confirmar los cambios en la base de datos
+        db.session.commit()
 
-        return libro  # Devolver el libro actualizado
+        return libro

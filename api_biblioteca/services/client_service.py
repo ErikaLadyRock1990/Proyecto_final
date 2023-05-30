@@ -10,7 +10,7 @@ class ClientService:
 
     @staticmethod
     def buscar_clientes(id=None, dni=None, nombre=None, telefono=None):
-        query = Cliente.query  # Inicializar la consulta con todos los clientes
+        query = Cliente.query
 
         if id:
             query = query.filter(Cliente.id.ilike(f"%{id}%"))
@@ -27,23 +27,23 @@ class ClientService:
 
     @staticmethod
     def borrar_cliente(id):
-        cliente = Cliente.query.get(id)  # Buscar el cliente por su ID
+        cliente = Cliente.query.get(id)
 
         if cliente:
-            db.session.delete(cliente)  # Eliminar el cliente de la base de datos
-            db.session.commit()  # Confirmar los cambios en la base de datos
+            db.session.delete(cliente)
+            db.session.commit()
 
-            return True  # Indicar que el cliente se borró correctamente
+            return True
         else:
-            return False  # Indicar que el cliente no fue encontrado
+            return False
 
     @staticmethod
     def actualizar_cliente(id, dni=None, nombre=None, telefono=None):
-        cliente = Cliente.query.get(id)  # Buscar el cliente por su ID
+        cliente = Cliente.query.get(id)
 
         if not cliente:
             return None
-        
+
         if dni:
             cliente.dni = dni
         if nombre:
@@ -51,7 +51,6 @@ class ClientService:
         if telefono:
             cliente.telefono = telefono
 
-        db.session.commit()  # Confirmar los cambios en la base de datos
+        db.session.commit()
 
-        return cliente  # Devolver el cliente actualizado
-    
+        return cliente
