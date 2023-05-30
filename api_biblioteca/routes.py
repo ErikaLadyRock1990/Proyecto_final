@@ -12,7 +12,7 @@ DIAS_DE_PRESTAMO = 31
 
 @bp.route("/")
 def index():
-    return "Proyecto final"
+    return "Proyecto final Erika Yuste"
 
 
 @bp.route("/guardar-libro", methods=["POST"])
@@ -24,10 +24,10 @@ def guardar_libro():
 
     BookService.guardar_libro(titulo, autor, genero, año)
 
-    return "Libro guardado correctamente", 201
+    return jsonify({"Mensaje": "Libro guardado correctamente"})
 
 
-@bp.route("/buscar-libro", methods=["GET"])
+@bp.route("/buscar-libros", methods=["GET"])
 def buscar_libros():
     id = request.json.get("id")
     titulo = request.json.get("titulo")
@@ -40,9 +40,10 @@ def buscar_libros():
     )
 
     if len(libros) == 0:
-        return jsonify({"Mensaje": "No se han encontrado clentes"})
+        return jsonify({"Mensaje": "No se han encontrado libros"})
 
     libros_json = []
+
     for libro in libros:
         libro_json = {
             "id": libro.id,
@@ -58,17 +59,16 @@ def buscar_libros():
 
 @bp.route("/borrar-libro", methods=["POST"])
 def borrar_libro():
-    id = request.json.get("id")  # Obtener el valor del campo "id" del JSON
+    id = request.json.get("id")
     if not id:
-        return jsonify({"mensaje": "Libro no encontrado"}), 400
+        return jsonify({"mensaje": "Libro no encontrado"})
 
-    # Intentar borrar el libro utilizando el ID
     libro_borrado = BookService.borrar_libro(id)
 
-    if libro_borrado:
-        return jsonify({"mensaje": "Libro borrado correctamente"}), 200
-    else:
-        return jsonify({"mensaje": "No se encontró el libro"}), 404
+    if not libro_borrado:
+       return jsonify({"Mensaje": "No se han encontrado libros"})
+    
+    return jsonify({"mensaje": "Libro borrado correctamente"})
 
 
 @bp.route("/actualizar-libro", methods=["POST"])
@@ -80,6 +80,9 @@ def actualizar_libro():
     año = request.json.get("año")
 
     libro = BookService.actualizar_libro(id, titulo, autor, genero, año)
+
+    if not libro:
+       return jsonify({"Mensaje": "No se han encontrado libros"})
 
     libro_json = {
         "id": libro.id,
@@ -100,10 +103,10 @@ def guardar_cliente():
 
     ClientService.guardar_cliente(dni, nombre, telefono)
 
-    return "Cliente guardado correctamente", 201
+    return jsonify({"Mensaje": "Cliente guardado correctamente"})
 
 
-@bp.route("/buscar-cliente", methods=["GET"])
+@bp.route("/buscar-clientes", methods=["GET"])
 def buscar_clientes():
     id = request.json.get("id")
     dni = request.json.get("dni")
@@ -115,9 +118,10 @@ def buscar_clientes():
     )
 
     if len(clientes) == 0:
-        return jsonify({"Mensaje": "No se han encontrado clentes"})
+        return jsonify({"Mensaje": "No se han encontrado clientes"})
 
     clientes_json = []
+
     for cliente in clientes:
         libro_json = {
             "id": cliente.id,
@@ -133,15 +137,13 @@ def buscar_clientes():
 @bp.route("/borrar-cliente", methods=["POST"])
 def borrar_cliente():
     id = request.json.get("id")
-    if not id:
-        return jsonify({"mensaje": "Cliente no encontrado"}), 400
 
     cliente_borrado = ClientService.borrar_cliente(id)
 
-    if cliente_borrado:
-        return jsonify({"mensaje": "Cliente borrado correctamente"}), 200
-    else:
-        return jsonify({"mensaje": "No se encontró el cliente"}), 404
+    if not cliente_borrado:
+        return jsonify({"Mensaje": "No se han encontrado clientes"})
+        
+    return jsonify({"mensaje": "Cliente borrado correctamente"})        
 
 
 @bp.route("/actualizar-cliente", methods=["POST"])
@@ -154,6 +156,9 @@ def actualizar_cliente():
     cliente = ClientService.actualizar_cliente(
         id, dni=dni, nombre=nombre, telefono=telefono
     )
+
+    if not cliente:
+       return jsonify({"Mensaje": "No se han encontrado clentes"})
 
     cliente_json = {
         "dni": cliente.dni,
@@ -172,7 +177,7 @@ def nuevo_prestamo():
     prestamo = BorrowService.nuevo_prestamo(id_cliente, id_libro)
 
     if not prestamo:
-        return jsonify({"Error": "El libro o el cliente no están disponibles"})
+        return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
 
     fecha_actual = date.today()
     duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
@@ -191,14 +196,14 @@ def nuevo_prestamo():
     return jsonify(prestamo_json)
 
 
-@bp.route("/buscar-prestamo", methods=["GET"])
+@bp.route("/buscar-prestamos", methods=["GET"])
 def buscar_prestamos():
     dni = request.json.get("dni")
 
     prestamos = BorrowService.buscar_prestamo(dni)
 
     if not prestamos:
-        return jsonify({"Error": "No hay préstamos"})
+        return jsonify({"Mensaje": "No se han encontrado préstamos"})
 
     prestamos_json = []
 
@@ -231,11 +236,10 @@ def borrar_prestamo():
 
     prestamo_borrado = BorrowService.borrar_prestamo(id)
 
-    if prestamo_borrado:
-        return jsonify({"Mensaje": "Préstamo borrado con éxito"})
-    else:
-        return jsonify({"Mensaje": "Préstamo no encontrado"})
-
+    if not prestamo_borrado:
+        return jsonify({"Mensaje": "No se han encontrado préstamos"})
+    
+    return jsonify({"Mensaje": "Préstamo borrado con éxito"})
 
 @bp.route("/devolver-prestamo", methods=["POST"])
 def devolver_prestamo():
@@ -243,7 +247,8 @@ def devolver_prestamo():
 
     prestamo_devuelto = BorrowService.devolver_prestamo(id)
 
-    if prestamo_devuelto:
-        return jsonify({"Mensaje": "El préstamo se ha devuelto correctamente"})
-    else:
-        return jsonify({"Mensaje": "El préstamo no ha sido encontrado"})
+    if not prestamo_devuelto:
+        return jsonify({"Mensaje": "No se han encontrado préstamos"})
+    
+    return jsonify({"Mensaje": "El préstamo se ha devuelto correctamente"})
+    
