@@ -9,6 +9,7 @@ bp = Blueprint("api_biblioteca", __name__)
 
 DIAS_DE_PRESTAMO = 31
 
+
 @bp.route("/")
 def index():
     return "Proyecto final"
@@ -196,7 +197,7 @@ def buscar_prestamos():
         return jsonify({"Error": "No hay préstamos"})
 
     prestamos_json = []
-    
+
     for prestamo in prestamos:
         fecha_actual = date.today()
         duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
@@ -213,3 +214,27 @@ def buscar_prestamos():
         prestamos_json.append(prestamo_json)
 
     return jsonify(prestamos_json)
+
+
+@bp.route("/borrar-prestamo", methods=["POST"])
+def borrar_prestamo():
+    id = request.json.get("id")
+
+    prestamo_borrado = BorrowService.borrar_prestamo(id)
+
+    if prestamo_borrado:
+        return jsonify({"Mensaje": "Préstamo borrado con éxito"})
+    else:
+        return jsonify({"Mensaje": "Préstamo no encontrado"})
+
+
+@bp.route("/devolver-prestamo", methods=["POST"])
+def devolver_prestamo():
+    id = request.json.get("id")
+
+    prestamo_devuelto = BorrowService.devolver_prestamo(id)
+
+    if prestamo_devuelto:
+        return jsonify({"Mensaje": "El préstamo se ha devuelto correctamente"})
+    else:
+        return jsonify({"Mensaje": "El préstamo no ha sido encontrado"})

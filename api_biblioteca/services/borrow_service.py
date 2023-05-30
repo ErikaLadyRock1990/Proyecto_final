@@ -41,3 +41,28 @@ class BorrowService:
             )
 
         return prestamos
+
+    @staticmethod
+    def borrar_prestamo(id):
+        prestamo = Prestamo.query.filter(Prestamo.id == id).first()
+
+        if prestamo:
+            db.session.delete(prestamo)
+            db.session.commit()
+
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def devolver_prestamo(id):
+        prestamo = Prestamo.query.filter(Prestamo.id == id).first()
+
+        if prestamo:
+            prestamo.devuelto = True
+            
+            db.session.commit()
+
+            return True
+        else:
+            return False
