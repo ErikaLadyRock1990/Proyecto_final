@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Proyecto Erika - Guardar Libro</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .header {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #800080;
+            transition: color 0.3s;
+        }
+
+        .header h1:hover {
+            color: black;
+        }
+
+        .form-container {
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #800080;
+            font-size: 12px;
+        }
+
+        .heart {
+            color: #800080;
+        }
+
+        .form-button:hover {
+            background-color: #45a049;
+        }
+
+        .response-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>BiblioXpert</h1>
+    </div>
+    <div class="form-container">
+        <form id="guardar-libro-form" method="POST" action="/guardar-libro">
+            <label for="titulo" class="form-label">Título:</label>
+            <input type="text" id="titulo" name="titulo" class="form-input" required>
+
+            <label for="autor" class="form-label">Autor:</label>
+            <input type="text" id="autor" name="autor" class="form-input" required>
+
+            <label for="genero" class="form-label">Género:</label>
+            <input type="text" id="genero" name="genero" class="form-input" required>
+
+            <label for="año" class="form-label">Año:</label>
+            <input type="number" id="año" name="año" class="form-input" required>
+
+            <button type="submit" class="form-button">Guardar Libro</button>
+        </form>
+        <script>
+            document.getElementById("guardar-libro-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                var form = event.target;
+                var data = {
+                    titulo: form.elements.titulo.value,
+                    autor: form.elements.autor.value,
+                    genero: form.elements.genero.value,
+                    año: form.elements.año.value
+                };
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{{ url_for('api_biblioteca.guardar_libro') }}");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        var message = response.Mensaje;
+
+                        var responseContainer = document.getElementById("response-container");
+                        responseContainer.textContent = message;
+                        responseContainer.style.display = "block";
+                        setTimeout(function () {
+                            responseContainer.style.display = "none";
+                        }, 2000);
+
+                        form.reset();
+                    }
+                };
+                xhr.send(JSON.stringify(data));
+            });
+        </script>
+    </div>
+    <div id="response-container"></div>
+    <div class="footer">
+        Made with <span class="heart">♥</span> by Erika
+    </div>
+</body>
+
+
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Proyecto Erika - Buscar Libros</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .header {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #800080;
+            transition: color 0.3s;
+        }
+
+        .header h1:hover {
+            color: black;
+        }
+
+        .form-container {
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .form-button:hover {
+            background-color: #45a049;
+        }
+
+        .result-list {
+            width: 300px;
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .result-item {
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        /* Estilos para la tabla */
+        .table-container {
+            max-height: 200px;
+            max-width: fit-content;
+            overflow-y: auto;
+
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .table-container thead {
+            position: sticky;
+            top: 0;
+            background-color: #31b2b0;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        /* Estilos para los botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-buttons button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #800080;
+            font-size: 12px;
+        }
+
+        .heart {
+            color: #800080;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>BiblioXpert</h1>
+    </div>
+    <div class="form-container">
+        <form id="buscar-libros-form">
+            <label for="id" class="form-label">ID:</label>
+            <input type="text" id="id" name="id" class="form-input">
+
+            <label for="titulo" class="form-label">Título:</label>
+            <input type="text" id="titulo" name="titulo" class="form-input">
+
+            <label for="autor" class="form-label">Autor:</label>
+            <input type="text" id="autor" name="autor" class="form-input">
+
+            <label for="genero" class="form-label">Género:</label>
+            <input type="text" id="genero" name="genero" class="form-input">
+
+            <label for="año" class="form-label">Año:</label>
+            <input type="number" id="año" name="año" class="form-input">
+
+            <button type="submit" class="form-button">Buscar</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <table id="result-table" class="result-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Género</th>
+                    <th>Año</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="result-list">
+                <!-- Los registros se agregarán dinámicamente aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        Made with <span class="heart">♥</span> by Erika
+    </div>
+    <script>
+        document.getElementById("buscar-libros-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            var form = event.target;
+            var data = {
+                id: form.elements.id.value,
+                titulo: form.elements.titulo.value,
+                autor: form.elements.autor.value,
+                genero: form.elements.genero.value,
+                año: form.elements.año.value
+            };
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('api_biblioteca.buscar_libros') }}");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        console.log(response);
+                        var resultList = document.getElementById("result-list");
+                        resultList.innerHTML = ""; // Limpiar la lista de resultados antes de mostrar los nuevos resultados
+
+                        if (response.length === 0) {
+                            var listItem = document.createElement("tr");
+                            var noResultsCell = document.createElement("td");
+                            noResultsCell.textContent = "No se han encontrado libros";
+                            noResultsCell.colSpan = 6;
+                            listItem.appendChild(noResultsCell);
+                            resultList.appendChild(listItem);
+                        } else {
+                            response.forEach(function (libro) {
+                                var listItem = document.createElement("tr");
+
+                                var idCell = document.createElement("td");
+                                idCell.textContent = libro.id;
+                                listItem.appendChild(idCell);
+
+                                var tituloCell = document.createElement("td");
+                                tituloCell.textContent = libro.titulo;
+                                listItem.appendChild(tituloCell);
+
+                                var autorCell = document.createElement("td");
+                                autorCell.textContent = libro.autor;
+                                listItem.appendChild(autorCell);
+
+                                var generoCell = document.createElement("td");
+                                generoCell.textContent = libro.genero;
+                                listItem.appendChild(generoCell);
+
+                                var añoCell = document.createElement("td");
+                                añoCell.textContent = libro.año;
+                                listItem.appendChild(añoCell);
+
+                                var accionesCell = document.createElement("td");
+                                var borrarButton = document.createElement("button");
+                                borrarButton.textContent = "Borrar";
+                                function borrarLibro(id) {
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("POST", "{{ url_for('api_biblioteca.borrar_libro') }}");
+                                    xhr.setRequestHeader("Content-Type", "application/json");
+                                    xhr.onreadystatechange = function () {
+                                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                                            if (xhr.status === 200) {
+                                                var response = JSON.parse(xhr.responseText);
+                                                console.log(response);
+                                                // Aquí puedes realizar acciones adicionales después de borrar el libro
+                                            } else {
+                                                console.error(xhr.status);
+                                            }
+                                        }
+                                    };
+                                    var data = { id: id };
+                                    xhr.send(JSON.stringify(data));
+                                }
+                                borrarButton.addEventListener("click", function () {
+                                    borrarLibro(libro.id);
+                                });
+                                accionesCell.appendChild(borrarButton);
+                                listItem.appendChild(accionesCell);
+
+                                resultList.appendChild(listItem);
+                            });
+                        }
+                    } else {
+                        console.error(xhr.status);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        });
+    </script>
+</body>
+
+</html>
