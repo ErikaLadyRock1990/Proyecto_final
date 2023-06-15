@@ -6,6 +6,7 @@ from .services.client_service import ClientService
 from .services.borrow_service import BorrowService
 from datetime import date
 
+
 bp = Blueprint("api_biblioteca", __name__)
 
 DIAS_DE_PRESTAMO = 31
@@ -103,43 +104,53 @@ def actualizar_libro():
     return jsonify(libro_json)
 
 
-@bp.route("/guardar-cliente", methods=["POST"])
+@bp.route("/guardar-cliente", methods=["GET", "POST"])
 def guardar_cliente():
-    dni = request.json.get("dni")
-    nombre = request.json.get("nombre")
-    telefono = request.json.get("telefono")
+    if request.method == "GET":
+        return render_template("guardar_cliente.html")
+    
+    if request.method == "POST":
+        dni = request.json.get("dni")
+        nombre = request.json.get("nombre")
+        telefono = request.json.get("telefono")
 
-    ClientService.guardar_cliente(dni, nombre, telefono)
+        ClientService.guardar_cliente(dni, nombre, telefono)
 
-    return jsonify({"Mensaje": "Cliente guardado correctamente"})
+        return jsonify({"Mensaje": "Cliente guardado correctamente"})
+    return render_template("guardar_cliente.html")  
+    
+    
+    
 
-
-@bp.route("/buscar-clientes", methods=["GET"])
+@bp.route("/buscar-clientes", methods=["GET", "POST"])
 def buscar_clientes():
-    id = request.json.get("id")
-    dni = request.json.get("dni")
-    nombre = request.json.get("nombre")
-    telefono = request.json.get("telefono")
+    if request.method == "GET":
+        return render_template("buscar_clientes.html")
+    elif request.method == "POST":
+        id = request.json.get("id")
+        dni = request.json.get("dni")
+        nombre = request.json.get("nombre")
+        telefono = request.json.get("telefono")
 
-    clientes = ClientService.buscar_clientes(
-        id=id, dni=dni, nombre=nombre, telefono=telefono
-    )
+        clientes = ClientService.buscar_clientes(
+            id=id, dni=dni, nombre=nombre, telefono=telefono
+        )
 
-    if len(clientes) == 0:
-        return jsonify({"Mensaje": "No se han encontrado clientes"})
+        if len(clientes) == 0:
+            return jsonify({"Mensaje": "No se han encontrado clientes"})
 
-    clientes_json = []
+        clientes_json = []
 
-    for cliente in clientes:
-        libro_json = {
-            "id": cliente.id,
-            "dni": cliente.dni,
-            "nombre": cliente.nombre,
-            "telefono": cliente.telefono,
-        }
-        clientes_json.append(libro_json)
+        for cliente in clientes:
+            libro_json = {
+                "id": cliente.id,
+                "dni": cliente.dni,
+                "nombre": cliente.nombre,
+                "telefono": cliente.telefono,
+            }
+            clientes_json.append(libro_json)
 
-    return jsonify(clientes_json)
+    return json.dumps(clientes_json)
 
 
 @bp.route("/borrar-cliente", methods=["POST"])
@@ -177,51 +188,21 @@ def actualizar_cliente():
     return jsonify(cliente_json)
 
 
-@bp.route("/nuevo-prestamo", methods=["POST"])
+@bp.route("/nuevo-prestamo", methods=["GET", "POST"])
 def nuevo_prestamo():
-    id_cliente = request.json.get("id_cliente")
-    id_libro = request.json.get("id_libro")
+    if request.method == "GET":
+        return render_template("nuevo_prestamo.html")
+    elif request.method == "POST":
+        id_cliente = request.json.get("id_cliente")
+        id_libro = request.json.get("id_libro")
 
-    prestamo = BorrowService.nuevo_prestamo(id_cliente, id_libro)
+        prestamo = BorrowService.nuevo_prestamo(id_cliente, id_libro)
 
-    if not prestamo:
-        return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
+        if not prestamo:
+            return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
 
-    fecha_actual = date.today()
-    duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
-
-    prestamo_json = {
-        "id": prestamo.id,
-        "id_cliente": prestamo.id_cliente,
-        "id_libro": prestamo.id_libro,
-        "titulo": prestamo.titulo,
-        "nombre_cliente": prestamo.nombre,
-        "devuelto": prestamo.devuelto,
-        "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
-        "dias_restantes": DIAS_DE_PRESTAMO - duracion_del_prestamo,
-    }
-
-    return jsonify(prestamo_json)
-
-
-@bp.route("/buscar-prestamos", methods=["GET"])
-def buscar_prestamos():
-    dni = request.json.get("dni")
-
-    prestamos = BorrowService.buscar_prestamo(dni)
-
-    if not prestamos:
-        return jsonify({"Mensaje": "No se han encontrado préstamos"})
-
-    prestamos_json = []
-
-    for prestamo in prestamos:
         fecha_actual = date.today()
         duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
-        dias_restantes = 0
-
-        if prestamo.devuelto == False:
-            dias_restantes = DIAS_DE_PRESTAMO - duracion_del_prestamo
 
         prestamo_json = {
             "id": prestamo.id,
@@ -231,12 +212,50 @@ def buscar_prestamos():
             "nombre_cliente": prestamo.nombre,
             "devuelto": prestamo.devuelto,
             "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
-            "dias_restantes": dias_restantes,
+            "dias_restantes": DIAS_DE_PRESTAMO - duracion_del_prestamo,
         }
-        prestamos_json.append(prestamo_json)
 
-    return jsonify(prestamos_json)
+        return jsonify(prestamo_json)
+    return render_template("nuevo_prestamo.html")
 
+
+@bp.route("/buscar-prestamos", methods=["GET", "POST"])
+def buscar_prestamos():
+    
+    if request.method == "GET":
+        return render_template("buscar_prestamos.html")
+    elif request.method == "POST":
+        dni = request.json.get("dni")
+        
+        prestamos = BorrowService.buscar_prestamo(dni)
+
+        if not prestamos:
+            return jsonify({"Mensaje": "No se han encontrado préstamos"})
+
+        prestamos_json = []
+
+        for prestamo in prestamos:
+            fecha_actual = date.today()
+            duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
+            dias_restantes = 0
+
+            if prestamo.devuelto == False:
+                dias_restantes = DIAS_DE_PRESTAMO - duracion_del_prestamo
+
+            prestamo_json = {
+                "id": prestamo.id,
+                "id_cliente": prestamo.id_cliente,
+                "id_libro": prestamo.id_libro,
+                "titulo": prestamo.titulo,
+                "nombre_cliente": prestamo.nombre,
+                "devuelto": prestamo.devuelto,
+                "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
+                "dias_restantes": dias_restantes,
+            }
+            prestamos_json.append(prestamo_json)
+
+        return json.dumps(prestamo_json)
+    return render_template("buscar_prestamos.html")
 
 @bp.route("/borrar-prestamo", methods=["POST"])
 def borrar_prestamo():

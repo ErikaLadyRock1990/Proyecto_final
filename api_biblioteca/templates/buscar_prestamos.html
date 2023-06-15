@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Proyecto Erika - Buscar Libros</title>
+    <title>Proyecto Erika - Buscar Préstamo</title>
     <style>
         body {
             display: flex;
@@ -149,21 +149,9 @@
         <h1>BiblioXpert</h1>
     </div>
     <div class="form-container">
-        <form id="buscar-libros-form">
-            <label for="id" class="form-label">ID:</label>
-            <input type="number" id="id" name="id" class="form-input">
-
-            <label for="titulo" class="form-label">Título:</label>
-            <input type="text" id="titulo" name="titulo" class="form-input">
-
-            <label for="autor" class="form-label">Autor:</label>
-            <input type="text" id="autor" name="autor" class="form-input">
-
-            <label for="genero" class="form-label">Género:</label>
-            <input type="text" id="genero" name="genero" class="form-input">
-
-            <label for="año" class="form-label">Año:</label>
-            <input type="number" id="año" name="año" class="form-input">
+        <form id="buscar-prestamos-form">
+            <label for="dni" class="form-label">DNI:</label>
+            <input type="text" id="dni" name="dni" class="form-input">
 
             <button type="submit" class="form-button">Buscar</button>
         </form>
@@ -172,11 +160,7 @@
         <table id="result-table" class="result-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Género</th>
-                    <th>Año</th>
+                    <th>DNI</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -190,20 +174,17 @@
         Made with <span class="heart">♥</span> by Erika
     </div>
     <script>
-        document.getElementById("buscar-libros-form").addEventListener("submit", function (event) {
+        document.getElementById("buscar-prestamos-form").addEventListener("submit", function (event) {
             event.preventDefault();
 
             var form = event.target;
             var data = {
-                id: form.elements.id.value,
-                titulo: form.elements.titulo.value,
-                autor: form.elements.autor.value,
-                genero: form.elements.genero.value,
-                año: form.elements.año.value
+                dni: form.elements.dni.value,
+               
             };
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "{{ url_for('api_biblioteca.buscar_libros') }}");
+            xhr.open("POST", "{{ url_for('api_biblioteca.buscar_prestamos') }}");
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -216,40 +197,26 @@
                         if (response.length === 0) {
                             var listItem = document.createElement("tr");
                             var noResultsCell = document.createElement("td");
-                            noResultsCell.textContent = "No se han encontrado libros";
+                            noResultsCell.textContent = "No se han encontrado prestamos";
                             noResultsCell.colSpan = 6;
                             listItem.appendChild(noResultsCell);
                             resultList.appendChild(listItem);
                         } else {
-                            response.forEach(function (libro) {
+                            response.forEach(function (prestamos) {
                                 var listItem = document.createElement("tr");
 
-                                var idCell = document.createElement("td");
-                                idCell.textContent = libro.id;
-                                listItem.appendChild(idCell);
+                                var dniCell = document.createElement("td");
+                                dniCell.textContent = prestamos.dni;
+                                listItem.appendChild(dniCell);
 
-                                var tituloCell = document.createElement("td");
-                                tituloCell.textContent = libro.titulo;
-                                listItem.appendChild(tituloCell);
-
-                                var autorCell = document.createElement("td");
-                                autorCell.textContent = libro.autor;
-                                listItem.appendChild(autorCell);
-
-                                var generoCell = document.createElement("td");
-                                generoCell.textContent = libro.genero;
-                                listItem.appendChild(generoCell);
-
-                                var añoCell = document.createElement("td");
-                                añoCell.textContent = libro.año;
-                                listItem.appendChild(añoCell);
+                        
 
                                 var accionesCell = document.createElement("td");
-                                var borrarButton = document.createElement("button");
-                                borrarButton.textContent = "Borrar";
-                                function borrarLibro(id) {
+                                var actualizarButton = document.createElement("button");
+                                actualizarButton.textContent = "Actualizar";
+                                function actualizarPréstamo(id) {
                                     var xhr = new XMLHttpRequest();
-                                    xhr.open("POST", "{{ url_for('api_biblioteca.borrar_libro') }}");
+                                    xhr.open("POST", "{{ url_for('api_biblioteca.devolver_prestamo') }}");
                                     xhr.setRequestHeader("Content-Type", "application/json");
                                     xhr.onreadystatechange = function () {
                                         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -264,10 +231,10 @@
                                     var data = { id: id };
                                     xhr.send(JSON.stringify(data));
                                 }
-                                borrarButton.addEventListener("click", function () {
-                                    borrarLibro(libro.id);
+                                actualizarButton.addEventListener("click", function () {
+                                    devolverPrestamo(prestamo.id);
                                 });
-                                accionesCell.appendChild(borrarButton);
+                                accionesCell.appendChild(actualizarButton);
                                 listItem.appendChild(accionesCell);
 
                                 resultList.appendChild(listItem);
