@@ -79,83 +79,66 @@
         }
 
         .response-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
             background-color: #f2f2f2;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
             text-align: center;
+            display: none;
         }
     </style>
 </head>
 
 <body>
-    <div class="header" onclick="window.location.href='http://localhost:5000/';" >
+    <div class="header" onclick="window.location.href='http://localhost:5000/';">
         <h1>BiblioXpert</h1>
     </div>
     <div class="form-container">
-        <form id="guardar-cliente-form" method="POST" action="/guardar-cliente">
-            <label for="id" class="form-label">ID:</label>
-            <input type="number" id="id" name="id" class="form-input" required>
-
-            <label for="dni" class="form-label">Dni:</label>
+        <form id="guardar-cliente-form" method="POST" action="{{ url_for('api_biblioteca.guardar_libro') }}">
+            <label for="dni" class="form-label">DNI:</label>
             <input type="text" id="dni" name="dni" class="form-input" required>
 
             <label for="nombre" class="form-label">Nombre:</label>
             <input type="text" id="nombre" name="nombre" class="form-input" required>
 
-            <label for="telefono" class="form-label">Teléfono:</label>
+            <label for="telefono" class="form-label">Telefono:</label>
             <input type="number" id="telefono" name="telefono" class="form-input" required>
 
-            <button type="submit" class="form-button">Guardar Cliente</button>
+            <button type="submit" class="form-button">Guardar Libro</button>
         </form>
-        <script>
-            document.getElementById("guardar-cliente-form").addEventListener("submit", function (event) {
-                event.preventDefault();
+        <div id="response-container" class="response-container"></div>
+    </div>
+    <div class="footer">
+        Made with <span class="heart">♥</span> by Erika
+    </div>
 
-                var form = event.target;
-                var data = {
-                    id: form.elements.id.value,
-                    dni: form.elements.dni.value,
-                    nombre: form.elements.nombre.value,
-                    telefono: form.elements.telefono.value
-                };
+    <script>
+        document.getElementById("guardar-cliente-form").addEventListener("submit", function (event) {
+            event.preventDefault();
 
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{{ url_for('api_biblioteca.guardar_cliente') }}");
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            var form = event.target;
+            var data = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('api_biblioteca.guardar_cliente') }}");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
                         var message = response.Mensaje;
 
                         var responseContainer = document.getElementById("response-container");
                         responseContainer.textContent = message;
                         responseContainer.style.display = "block";
-                        setTimeout(function () {
-                            responseContainer.style.display = "none";
-                        }, 2000);
-
                         form.reset();
+                    } else {
+                        console.error("Error en la solicitud. Estado: " + xhr.status);
                     }
-                };
-                xhr.send(JSON.stringify(data));
-            });
-        </script>
-    </div>
-    <div id="response-container"></div>
-    <div class="footer">
-        Made with <span class="heart">♥</span> by Erika
-    </div>
+                }
+            };
+            xhr.send(data);
+        });
+    </script>
 </body>
-
 
 </html>

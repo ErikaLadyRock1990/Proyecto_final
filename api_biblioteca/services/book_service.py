@@ -38,7 +38,7 @@ class BookService:
 
     @staticmethod
     def actualizar_libro(id, titulo=None, autor=None, genero=None, año=None):
-        libro = Libro.query.get(id)
+        libro = Libro.query.filter_by(id=id).first()
 
         if not libro:
             return None

@@ -20,10 +20,10 @@ def index():
 @bp.route("/guardar-libro", methods=["GET", "POST"])
 def guardar_libro():
     if request.method == "POST":
-        titulo = request.json.get("titulo")
-        autor = request.json.get("autor")
-        genero = request.json.get("genero")
-        año = request.json.get("año")
+        titulo = request.form.get("titulo")
+        autor = request.form.get("autor")
+        genero = request.form.get("genero")
+        año = request.form.get("año")
 
         BookService.guardar_libro(titulo, autor, genero, año)
 
@@ -37,11 +37,11 @@ def buscar_libros():
     if request.method == "GET":
         return render_template("buscar_libros.html")
     elif request.method == "POST":
-        id = request.json.get("id")
-        titulo = request.json.get("titulo")
-        autor = request.json.get("autor")
-        genero = request.json.get("genero")
-        año = request.json.get("año")
+        id = request.form.get("id")
+        titulo = request.form.get("titulo")
+        autor = request.form.get("autor")
+        genero = request.form.get("genero")
+        año = request.form.get("año")
 
         libros = BookService.buscar_libros(
             id=id, titulo=titulo, autor=autor, genero=genero, año=año
@@ -80,28 +80,28 @@ def borrar_libro():
 
     return jsonify({"mensaje": "Libro borrado correctamente"})
 
-@bp.route("/actualizar-libro", methods=["POST"])
-def actualizar_libro():
-    id = request.json.get("id")
-    titulo = request.json.get("titulo")
-    autor = request.json.get("autor")
-    genero = request.json.get("genero")
-    año = request.json.get("año")
+@bp.route("/actualizar-libro", methods=["GET", "POST"])
+def actualizar_libro():    
+    if request.method == "GET":
+        id = request.args.get("id")
+        
+        libros = BookService.buscar_libros(id)
+        
+        return render_template("actualizar_libro.html",libro=libros[0])
+    
+    if request.method == "POST": 
+        id = request.form.get("id")
+        titulo = request.form.get("titulo")
+        autor = request.form.get("autor")
+        genero = request.form.get("genero")
+        año = request.form.get("año")
 
-    libro = BookService.actualizar_libro(id, titulo, autor, genero, año)
+        libro = BookService.actualizar_libro(id, titulo, autor, genero, año)
 
-    if not libro:
-        return jsonify({"Mensaje": "No se han encontrado libros"})
+        if not libro:
+            return jsonify({"Mensaje": "No se han encontrado libros"})
 
-    libro_json = {
-        "id": libro.id,
-        "titulo": libro.titulo,
-        "autor": libro.autor,
-        "genero": libro.genero,
-        "año": libro.año,
-    }
-
-    return jsonify(libro_json)
+    return jsonify({"Mensaje": "Libro actualizado"})
 
 
 @bp.route("/guardar-cliente", methods=["GET", "POST"])
@@ -110,9 +110,9 @@ def guardar_cliente():
         return render_template("guardar_cliente.html")
     
     if request.method == "POST":
-        dni = request.json.get("dni")
-        nombre = request.json.get("nombre")
-        telefono = request.json.get("telefono")
+        dni = request.form.get("dni")
+        nombre = request.form.get("nombre")
+        telefono = request.form.get("telefono")
 
         ClientService.guardar_cliente(dni, nombre, telefono)
 
