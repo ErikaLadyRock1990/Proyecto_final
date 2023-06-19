@@ -107,7 +107,7 @@
             <label for="año" class="form-label">Año:</label>
             <input type="number" id="año" name="año" class="form-input" required>
 
-            <button type="submit" class="form-button">Guardar Libro</button>
+            <button type="submit" class="form-button">Guardar</button>
         </form>
         <div id="response-container" class="response-container"></div>
     </div>
@@ -133,6 +133,9 @@
                         var responseContainer = document.getElementById("response-container");
                         responseContainer.textContent = message;
                         responseContainer.style.display = "block";
+                        setTimeout(function() {
+                            responseContainer.style.display = "none";
+                        }, 3000);
                     } else {
                         responseContainer.textContent =("Error en la solicitud. Estado: " + xhr.status);
                     }

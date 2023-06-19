@@ -1,4 +1,4 @@
-from api_biblioteca.models import Libro, db
+from api_biblioteca.models import Libro, db, Prestamo
 
 
 class BookService:
@@ -29,7 +29,15 @@ class BookService:
     @staticmethod
     def borrar_libro(id):
         libro = Libro.query.get(id)
+
         if libro:
+            prestamo_no_devuelto = Prestamo.query.filter_by(
+                id_libro=id, devuelto=False
+            ).first()
+
+            if prestamo_no_devuelto:
+                return False
+
             db.session.delete(libro)
             db.session.commit()
             return True

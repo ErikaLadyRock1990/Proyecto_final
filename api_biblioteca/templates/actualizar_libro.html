@@ -135,6 +135,9 @@
                         var responseContainer = document.getElementById("response-container");
                         responseContainer.textContent = message;
                         responseContainer.style.display = "block";
+                        setTimeout(function() {
+                            responseContainer.style.display = "none";
+                        }, 3000);
                     } else {
                         responseContainer.textContent =("Error en la solicitud. Estado: " + xhr.status);
                     }

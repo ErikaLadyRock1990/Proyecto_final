@@ -71,14 +71,14 @@ def borrar_libro():
     id = data.get("id")
 
     if not id:
-        return jsonify({"mensaje": "Libro no encontrado"})
+        return jsonify({"Mensaje": "Libro no encontrado"})
 
     libro_borrado = BookService.borrar_libro(id)
 
     if not libro_borrado:
-        return jsonify({"mensaje": "No se ha encontrado el libro"})
+        return jsonify({"Mensaje": "No se ha encontrado el libro o aún sigue activo el préstamo"}), 409
 
-    return jsonify({"mensaje": "Libro borrado correctamente"})
+    return jsonify({"Mensaje": "Libro borrado correctamente"}), 200
 
 @bp.route("/actualizar-libro", methods=["GET", "POST"])
 def actualizar_libro():    

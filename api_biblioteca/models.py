@@ -9,6 +9,8 @@ class Libro(db.Model):
     autor = db.Column(db.String(100), nullable=False)
     genero = db.Column(db.String(50), nullable=False)
     año = db.Column(db.Integer, nullable=False)
+    
+    prestamos_libro = relationship("Prestamo", back_populates="libro", cascade="all, delete")
 
     def __repr__(self):
         return f"<Libro {self.id}>"
@@ -19,6 +21,8 @@ class Cliente(db.Model):
     dni = db.Column(db.String(10), nullable=False, unique=True)
     nombre = db.Column(db.String(100), nullable=False)
     telefono = db.Column(db.Integer, nullable=False)
+    
+    prestamos_cliente = relationship("Prestamo", back_populates="cliente", cascade="all, delete")
 
     def __repr__(self):
         return f"<Cliente {self.id}>"
@@ -35,8 +39,8 @@ class Prestamo(db.Model):
         db.Date, nullable=False, default=datetime.datetime.utcnow
     )
 
-    cliente = relationship("Cliente", backref="prestamos")
-    libro = relationship("Libro", backref="prestamos")
+    libro = relationship("Libro", back_populates="prestamos_libro")
+    cliente = relationship("Cliente", back_populates="prestamos_cliente")
 
     def __repr__(self):
         return f"<Préstamo {self.id}>"

@@ -141,6 +141,15 @@
         .heart {
             color: #800080;
         }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 
@@ -165,7 +174,7 @@
             <label for="año" class="form-label">Año:</label>
             <input type="number" id="año" name="año" class="form-input">
 
-            <button type="submit" class="form-button">Buscar</button>
+            <button type="submit" class="form-button">Buscar</button> <div id="response-container" class="response-container"></div>
         </form>
     </div>
     <div class="table-container">
@@ -249,7 +258,7 @@
                                 
                                 var borrarButton = document.createElement("button");
                                 borrarButton.textContent = "Borrar";
-                                function borrarLibro(id) {
+                                function borrarLibro(id, fila) {
                                     var xhr = new XMLHttpRequest();
                                     xhr.open("POST", "{{ url_for('api_biblioteca.borrar_libro') }}");
                                     xhr.setRequestHeader("Content-Type", "application/json");
@@ -257,9 +266,25 @@
                                         if (xhr.readyState === XMLHttpRequest.DONE) {
                                             if (xhr.status === 200) {
                                                 var response = JSON.parse(xhr.responseText);
-                                                
+                                                fila.remove()
+
+                                                var response = JSON.parse(xhr.responseText);
+                                                var message = response.Mensaje;
+                                                var responseContainer = document.getElementById("response-container");
+                                                responseContainer.textContent = message;
+                                                responseContainer.style.display = "block";
+                                                setTimeout(function() {
+                                                    responseContainer.style.display = "none";
+                                                }, 3000);
                                             } else {
-                                                console.error(xhr.status);
+                                                var response = JSON.parse(xhr.responseText);
+                                                var message = response.Mensaje;
+                                                var responseContainer = document.getElementById("response-container");
+                                                responseContainer.textContent = message;
+                                                responseContainer.style.display = "block";
+                                                setTimeout(function() {
+                                                    responseContainer.style.display = "none";
+                                                }, 3000);
                                             }
                                         }
                                     };
@@ -267,7 +292,9 @@
                                     xhr.send(JSON.stringify(data));
                                 }
                                 borrarButton.addEventListener("click", function () {
-                                    borrarLibro(libro.id);
+                                    var fila = this.parentNode.parentNode;
+                                    borrarLibro(libro.id, fila);
+
                                 });
                                 accionesCell.appendChild(borrarButton);
                                 
