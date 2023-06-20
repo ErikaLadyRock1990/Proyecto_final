@@ -141,18 +141,27 @@
         .heart {
             color: #800080;
         }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-    <div class="header" onclick="window.location.href='http://localhost:5000/';" >
+    <div class="header" onclick="window.location.href='http://localhost:5000/';">
         <h1>BiblioXpert</h1>
     </div>
     <div class="form-container">
-        <form id="buscar-clientes-form">
+        <form id="buscar-clientes-form" method="POST" action="{{ url_for('api_biblioteca.buscar_clientes') }}">
             <input type="number" id="id" name="id" class="form-input" hidden>
 
-            <label for="dni" class="form-label">Dni:</label>
+            <label for="dni" class="form-label">DNI:</label>
             <input type="text" id="dni" name="dni" class="form-input">
 
             <label for="nombre" class="form-label">Nombre:</label>
@@ -161,9 +170,7 @@
             <label for="telefono" class="form-label">Teléfono:</label>
             <input type="number" id="telefono" name="telefono" class="form-input">
 
-        
-
-            <button type="submit" class="form-button">Buscar</button>
+            <button type="submit" class="form-button">Buscar</button> <div id="response-container" class="response-container"></div>
         </form>
     </div>
     <div class="table-container">
@@ -171,7 +178,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Dni</th>
+                    <th>DNI</th>
                     <th>Nombre</th>
                     <th>Teléfono</th>
                     <th>Acciones</th>
@@ -191,23 +198,17 @@
             event.preventDefault();
 
             var form = event.target;
-            var data = {
-                id: form.elements.id.value,
-                dni: form.elements.dni.value,
-                nombre: form.elements.nombre.value,
-                telefono: form.elements.telefono.value,
-            };
+            var formData = new FormData(form);
 
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "{{ url_for('api_biblioteca.buscar_clientes') }}");
-            xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
                         console.log(response);
                         var resultList = document.getElementById("result-list");
-                        resultList.innerHTML = ""; 
+                        resultList.innerHTML = "";
 
                         if (response.length === 0) {
                             var listItem = document.createElement("tr");
@@ -236,11 +237,27 @@
                                 telefonoCell.textContent = cliente.telefono;
                                 listItem.appendChild(telefonoCell);
 
-
                                 var accionesCell = document.createElement("td");
+
+                                var nuevoPrestamoButton = document.createElement("button");
+                                nuevoPrestamoButton.textContent = "Nuevo Préstamo";
+                                nuevoPrestamoButton.addEventListener("click", function() {
+                                  var cliente_id = cliente.id;
+                                  window.location.href = "{{ url_for('api_biblioteca.nuevo_prestamo') }}?cliente_id=" + cliente_id;
+                                });
+                                accionesCell.appendChild(nuevoPrestamoButton);
+                                
+                                var actualizarButton = document.createElement("button");
+                                actualizarButton.textContent = "Actualizar";
+                                actualizarButton.addEventListener("click", function() {
+                                  var cliente_id = cliente.id;
+                                  window.location.href = "{{ url_for('api_biblioteca.actualizar_cliente') }}?id=" + cliente_id;
+                                });
+                                accionesCell.appendChild(actualizarButton);                                
+                                
                                 var borrarButton = document.createElement("button");
                                 borrarButton.textContent = "Borrar";
-                                function borrarCliente(id) {
+                                function borrarCliente(id, fila) {
                                     var xhr = new XMLHttpRequest();
                                     xhr.open("POST", "{{ url_for('api_biblioteca.borrar_cliente') }}");
                                     xhr.setRequestHeader("Content-Type", "application/json");
@@ -248,9 +265,25 @@
                                         if (xhr.readyState === XMLHttpRequest.DONE) {
                                             if (xhr.status === 200) {
                                                 var response = JSON.parse(xhr.responseText);
-                                                
+                                                fila.remove()
+
+                                                var response = JSON.parse(xhr.responseText);
+                                                var message = response.Mensaje;
+                                                var responseContainer = document.getElementById("response-container");
+                                                responseContainer.textContent = message;
+                                                responseContainer.style.display = "block";
+                                                setTimeout(function() {
+                                                    responseContainer.style.display = "none";
+                                                }, 3000);
                                             } else {
-                                                console.error(xhr.status);
+                                                var response = JSON.parse(xhr.responseText);
+                                                var message = response.Mensaje;
+                                                var responseContainer = document.getElementById("response-container");
+                                                responseContainer.textContent = message;
+                                                responseContainer.style.display = "block";
+                                                setTimeout(function() {
+                                                    responseContainer.style.display = "none";
+                                                }, 3000);
                                             }
                                         }
                                     };
@@ -258,9 +291,12 @@
                                     xhr.send(JSON.stringify(data));
                                 }
                                 borrarButton.addEventListener("click", function () {
-                                    borrarCliente(cliente.id);
+                                    var fila = this.parentNode.parentNode;
+                                    borrarCliente(cliente.id, fila);
+
                                 });
                                 accionesCell.appendChild(borrarButton);
+                                
                                 listItem.appendChild(accionesCell);
 
                                 resultList.appendChild(listItem);
@@ -271,7 +307,7 @@
                     }
                 }
             };
-            xhr.send(JSON.stringify(data));
+            xhr.send(formData);
         });
     </script>
 </body>

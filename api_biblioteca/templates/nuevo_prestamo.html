@@ -32,23 +32,21 @@
         }
 
         .form-container {
-            width: 300px;
+            display: flex;
+            align-items: center;
+            width: 800px;
             margin-bottom: 20px;
+        }
+
+        .form-container table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
         .form-label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
         }
 
         .form-button {
@@ -62,6 +60,63 @@
             cursor: pointer;
         }
 
+        .form-button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+        .form-button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
+        /* Estilos para la tabla */
+        .table-container {
+            max-height: 200px;
+            max-width: fit-content;
+            overflow-y: auto;
+
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .table-container thead {
+            position: sticky;
+            top: 0;
+            background-color: #31b2b0;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        /* Estilos para los botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-buttons button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+
         .footer {
             position: absolute;
             bottom: 10px;
@@ -73,101 +128,69 @@
         .heart {
             color: #800080;
         }
-
-        .form-button:hover {
-            background-color: #45a049;
-        }
-
-        .response-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            padding: 20px;
-            background-color: #f2f2f2;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            text-align: center;
-        }
     </style>
 </head>
 
 <body>
-    <div class="header" onclick="window.location.href='http://localhost:5000/';" >
+    <div class="header" onclick="window.location.href='http://localhost:5000/';">
         <h1>BiblioXpert</h1>
     </div>
-    <div class="form-container">
-        <form id="nuevo-prestamo-form"method="POST" action="/nuevo-prestamo">
-            <label for="id" class="form-label">ID:</label>
-            <input type="number" id="id" name="id" class="form-input" required>
-
-            <label for="id_cliente" class="form-label">Id Cliente:</label>
-            <input type="number" id="id_cliente" name="id_cliente" class="form-input" required>
-
-            <label for="id_libro" class="form-label">Id Libro:</label>
-            <input type="number" id="id_libro" name="id_libro" class="form-input" required>
-
-            <label for="titulo" class="form-label">Título:</label>
-            <input type="text" id="titulo" name="titulo" class="form-input" required>
-
-            <label for="nombre_cliente" class="form-label">Nombre Cliente:</label>
-            <input type="text" id="nombre_cliente" name="nombre_cliente" class="form-input" required>
-
-            <label for="fecha_prestamo" class="form-label">Fecha Préstamo:</label>
-            <input type="number" id="fecha_prestamo" name="fecha_prestamo" class="form-input" required>
-
-            <label for="dias_restantes" class="form-label">Días Restantes:</label>
-            <input type="number" id="dias_restantes" name="dias_restantes" class="form-input" required>
-
-            <button type="submit" class="form-button">Guardar Libro</button>
-        </form>
-        <script>
-            document.getElementById("nuevo-prestamo-form").addEventListener("submit", function (event) {
-                event.preventDefault();
-
-                var form = event.target;
-                var data = {
-                    id: form.elements.id.value,
-                    id_cliente: form.elements.id_clientes.value,
-                    id_libro: form.elements.id_libro.value,
-                    titulo: form.elements.titulo.value,
-                    nombre_cliente: form.elements.nombre_cliente.value,
-                    fecha_prestamo: form.elements.fecha_prestamo.value,
-                    dias_restantes: form.elements.dias_restantes.value
-                };
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{{ url_for('api_biblioteca.nuevo_prestamo') }}");
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        var message = response.Mensaje;
-
-                        var responseContainer = document.getElementById("response-container");
-                        responseContainer.textContent = message;
-                        responseContainer.style.display = "block";
-                        setTimeout(function () {
-                            responseContainer.style.display = "none";
-                        }, 2000);
-
-                        form.reset();
-                    }
-                };
-                xhr.send(JSON.stringify(data));
-            });
-        </script>
+    <div>
+        <label for="dni" class="form-label">DNI: {{cliente.dni}}</label><br>
+        <label for="dni" class="form-label">Nombre: {{cliente.nombre}}</label><br>
+        <label for="dni" class="form-label">Teléfono: {{cliente.telefono}}</label>
     </div>
-    <div id="response-container"></div>
+    <div class="table-container">
+        <table id="result-table" class="result-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                </tr>
+            </thead>
+            <tbody id="libros-table">
+                {% for libro in libros %}
+                    <tr class="libro-item" data-id="{{ libro.id }}">
+                        <td>{{ libro.id }}</td>
+                        <td>{{ libro.titulo }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button id="realizar-prestamo-button" class="form-button" disabled>Realizar préstamo</button>
+
     <div class="footer">
         Made with <span class="heart">♥</span> by Erika
     </div>
-</body>
 
+    <script>
+        var selectedClienteId = cliente.id;
+        var selectedLibroId = null;
+
+        document.getElementById("result-table").addEventListener("click", function (event) {
+            var target = event.target;
+
+            if (target.tagName === "TD" && target.parentNode.classList.contains("libro-item")) {
+                var libroId = target.parentNode.dataset.id;
+                var selectedLibroItem = document.querySelector(".libro-item.selected");
+
+                if (selectedLibroItem) {
+                    selectedLibroItem.classList.remove("selected");
+                }
+
+                target.parentNode.classList.add("selected");
+                selectedLibroId = libroId;
+                enablePrestamoButton();
+            }
+        });
+
+        function enablePrestamoButton() {
+            var prestamoButton = document.getElementById("realizar-prestamo-button");
+            prestamoButton.disabled = !(selectedLibroId);
+        }
+    </script>
+</body>
 
 </html>

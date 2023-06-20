@@ -1,4 +1,5 @@
 from api_biblioteca.models import Libro, db, Prestamo
+from sqlalchemy import not_
 
 
 class BookService:
@@ -9,7 +10,7 @@ class BookService:
         db.session.commit()
 
     @staticmethod
-    def buscar_libros(id=None, titulo=None, autor=None, genero=None, año=None):
+    def buscar_libros(id=None, titulo=None, autor=None, genero=None, año=None, devuelto=None):
         query = Libro.query
 
         if id:
@@ -22,7 +23,12 @@ class BookService:
             query = query.filter(Libro.genero.ilike(f"%{genero}%"))
         if año:
             query = query.filter(Libro.año == año)
-
+        if devuelto is not None:
+            if devuelto:
+                query = query.filter(~Libro.prestamos_libro.any(Prestamo.devuelto == False))
+            else:
+                query = query.filter(Libro.prestamos_libro.any(Prestamo.devuelto == False))
+            
         libros = query.all()
         return libros
 

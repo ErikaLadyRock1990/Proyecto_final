@@ -127,10 +127,10 @@ def buscar_clientes():
     if request.method == "GET":
         return render_template("buscar_clientes.html")
     elif request.method == "POST":
-        id = request.json.get("id")
-        dni = request.json.get("dni")
-        nombre = request.json.get("nombre")
-        telefono = request.json.get("telefono")
+        id = request.form.get("id")
+        dni = request.form.get("dni")
+        nombre = request.form.get("nombre")
+        telefono = request.form.get("telefono")
 
         clientes = ClientService.buscar_clientes(
             id=id, dni=dni, nombre=nombre, telefono=telefono
@@ -165,33 +165,41 @@ def borrar_cliente():
     return jsonify({"mensaje": "Cliente borrado correctamente"})
 
 
-@bp.route("/actualizar-cliente", methods=["POST"])
+@bp.route("/actualizar-cliente", methods=["GET", "POST"])
 def actualizar_cliente():
-    id = request.json.get("id")
-    dni = request.json.get("dni")
-    nombre = request.json.get("nombre")
-    telefono = request.json.get("telefono")
+    if request.method == "GET":
+        id = request.args.get("id")
+        
+        clientes = ClientService.buscar_clientes(id)
+        
+        return render_template("actualizar_cliente.html", cliente=clientes[0])
+    if request.method == "POST":
+        
+        id = request.form.get("id")
+        dni = request.form.get("dni")
+        nombre = request.form.get("nombre")
+        telefono = request.form.get("telefono")
 
-    cliente = ClientService.actualizar_cliente(
-        id, dni=dni, nombre=nombre, telefono=telefono
-    )
+        cliente = ClientService.actualizar_cliente(
+            id, dni=dni, nombre=nombre, telefono=telefono
+        )  
 
-    if not cliente:
-        return jsonify({"Mensaje": "No se han encontrado clentes"})
+        if not cliente:
+            return jsonify({"Mensaje": "No se han encontrado clentes"})
 
-    cliente_json = {
-        "dni": cliente.dni,
-        "nombre": cliente.nombre,
-        "telefono": cliente.telefono,
-    }
-
-    return jsonify(cliente_json)
+    return jsonify({"Mensaje": "Cliente actualizado"})
 
 
 @bp.route("/nuevo-prestamo", methods=["GET", "POST"])
 def nuevo_prestamo():
     if request.method == "GET":
-        return render_template("nuevo_prestamo.html")
+        id = request.args.get("cliente_id")
+        
+        clientes = ClientService.buscar_clientes(id)
+        
+        libros = BookService.buscar_libros(None, None, None, None, None, True)
+        
+        return render_template("nuevo_prestamo.html", cliente=clientes[0], libros=libros)
     elif request.method == "POST":
         id_cliente = request.json.get("id_cliente")
         id_libro = request.json.get("id_libro")
@@ -201,22 +209,9 @@ def nuevo_prestamo():
         if not prestamo:
             return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
 
-        fecha_actual = date.today()
-        duracion_del_prestamo = (fecha_actual - prestamo.fecha_prestamo).days
 
-        prestamo_json = {
-            "id": prestamo.id,
-            "id_cliente": prestamo.id_cliente,
-            "id_libro": prestamo.id_libro,
-            "titulo": prestamo.titulo,
-            "nombre_cliente": prestamo.nombre,
-            "devuelto": prestamo.devuelto,
-            "fecha_prestamo": prestamo.fecha_prestamo.strftime("%Y-%m-%d"),
-            "dias_restantes": DIAS_DE_PRESTAMO - duracion_del_prestamo,
-        }
-
-        return jsonify(prestamo_json)
-    return render_template("nuevo_prestamo.html")
+        return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
+    return jsonify({"Mensaje": "Préstamo guardado correctamente"})
 
 
 @bp.route("/buscar-prestamos", methods=["GET", "POST"])
