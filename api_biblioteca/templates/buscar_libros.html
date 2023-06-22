@@ -29,6 +29,7 @@
 
         .header h1:hover {
             color: black;
+            cursor: pointer;
         }
 
         .form-container {
@@ -53,7 +54,7 @@
 
         .form-button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #4caf50;
             color: white;
             border: none;
             border-radius: 5px;
@@ -82,7 +83,6 @@
             text-align: left;
         }
 
-        /* Estilos para la tabla */
         .table-container {
             max-height: 200px;
             max-width: fit-content;
@@ -109,7 +109,6 @@
             border: 1px solid #ccc;
         }
 
-        /* Estilos para los botones de acción */
         .action-buttons {
             display: flex;
             gap: 5px;
@@ -117,7 +116,7 @@
 
         .action-buttons button {
             padding: 5px 10px;
-            background-color: #4CAF50;
+            background-color: #4caf50;
             color: white;
             border: none;
             border-radius: 5px;
@@ -128,6 +127,15 @@
 
         .action-buttons button:hover {
             background-color: #45a049;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            text-align: center;
+            display: none;
         }
 
         .footer {
@@ -141,15 +149,6 @@
         .heart {
             color: #800080;
         }
-
-        .response-container {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f2f2f2;
-            text-align: center;
-            display: none;
-        }
     </style>
 </head>
 
@@ -159,9 +158,6 @@
     </div>
     <div class="form-container">
         <form id="buscar-libros-form" method="POST" action="{{ url_for('api_biblioteca.buscar_libros') }}">
-            <label for="id" class="form-label">ID:</label>
-            <input type="number" id="id" name="id" class="form-input">
-
             <label for="titulo" class="form-label">Título:</label>
             <input type="text" id="titulo" name="titulo" class="form-input">
 
@@ -174,7 +170,7 @@
             <label for="año" class="form-label">Año:</label>
             <input type="number" id="año" name="año" class="form-input">
 
-            <button type="submit" class="form-button">Buscar</button> <div id="response-container" class="response-container"></div>
+            <button type="submit" class="form-button">Buscar</button>
         </form>
     </div>
     <div class="table-container">
@@ -190,7 +186,7 @@
                 </tr>
             </thead>
             <tbody id="result-list">
-               
+
             </tbody>
         </table>
     </div>
@@ -211,7 +207,6 @@
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
-                        console.log(response);
                         var resultList = document.getElementById("result-list");
                         resultList.innerHTML = "";
 
@@ -247,15 +242,15 @@
                                 listItem.appendChild(añoCell);
 
                                 var accionesCell = document.createElement("td");
-                                
+
                                 var actualizarButton = document.createElement("button");
                                 actualizarButton.textContent = "Actualizar";
-                                actualizarButton.addEventListener("click", function() {
-                                  var libro_id = libro.id;
-                                  window.location.href = "{{ url_for('api_biblioteca.actualizar_libro') }}?id=" + libro_id;
+                                actualizarButton.addEventListener("click", function () {
+                                    var libro_id = libro.id;
+                                    window.location.href = "{{ url_for('api_biblioteca.actualizar_libro') }}?id=" + libro_id;
                                 });
-                                accionesCell.appendChild(actualizarButton);                                
-                                
+                                accionesCell.appendChild(actualizarButton);
+
                                 var borrarButton = document.createElement("button");
                                 borrarButton.textContent = "Borrar";
                                 function borrarLibro(id, fila) {
@@ -263,29 +258,8 @@
                                     xhr.open("POST", "{{ url_for('api_biblioteca.borrar_libro') }}");
                                     xhr.setRequestHeader("Content-Type", "application/json");
                                     xhr.onreadystatechange = function () {
-                                        if (xhr.readyState === XMLHttpRequest.DONE) {
-                                            if (xhr.status === 200) {
-                                                var response = JSON.parse(xhr.responseText);
-                                                fila.remove()
-
-                                                var response = JSON.parse(xhr.responseText);
-                                                var message = response.Mensaje;
-                                                var responseContainer = document.getElementById("response-container");
-                                                responseContainer.textContent = message;
-                                                responseContainer.style.display = "block";
-                                                setTimeout(function() {
-                                                    responseContainer.style.display = "none";
-                                                }, 3000);
-                                            } else {
-                                                var response = JSON.parse(xhr.responseText);
-                                                var message = response.Mensaje;
-                                                var responseContainer = document.getElementById("response-container");
-                                                responseContainer.textContent = message;
-                                                responseContainer.style.display = "block";
-                                                setTimeout(function() {
-                                                    responseContainer.style.display = "none";
-                                                }, 3000);
-                                            }
+                                        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                                            fila.remove();
                                         }
                                     };
                                     var data = { id: id };
@@ -294,10 +268,10 @@
                                 borrarButton.addEventListener("click", function () {
                                     var fila = this.parentNode.parentNode;
                                     borrarLibro(libro.id, fila);
-
                                 });
+
                                 accionesCell.appendChild(borrarButton);
-                                
+
                                 listItem.appendChild(accionesCell);
 
                                 resultList.appendChild(listItem);

@@ -1,344 +1,301 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Proyecto Erika - Buscar Libros</title>
     <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        overflow: hidden;
-      }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
 
-      .header {
-        font-size: 24px;
-        text-align: center;
-        margin-bottom: 20px;
-      }
+        .header {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-      .header h1 {
-        font-size: 36px;
-        color: #800080;
-        transition: color 0.3s;
-      }
+        .header h1 {
+            font-size: 36px;
+            color: #800080;
+            transition: color 0.3s;
+        }
 
-      .header h1:hover {
-        color: black;
-      }
+        .header h1:hover {
+            color: black;
+            cursor: pointer;
+        }
 
-      .form-container {
-        width: 300px;
-        margin-bottom: 20px;
-      }
+        .form-container {
+            width: 300px;
+            margin-bottom: 20px;
+        }
 
-      .form-label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-      .form-input {
-        width: 100%;
-        padding: 5px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-      }
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
 
-      .form-button {
-        padding: 10px 20px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        cursor: pointer;
-      }
+        .form-button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
 
-      .form-button:hover {
-        background-color: #45a049;
-      }
+        .form-button:hover {
+            background-color: #45a049;
+        }
 
-      .result-list {
-        width: 300px;
-        margin-top: 20px;
-        list-style-type: none;
-        padding: 0;
-      }
+        .result-list {
+            width: 300px;
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
 
-      .result-item {
-        background-color: #f2f2f2;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 10px;
-        margin-bottom: 10px;
-        text-align: left;
-      }
+        .result-item {
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
 
-      /* Estilos para la tabla */
-      .table-container {
-        max-height: 200px;
-        max-width: fit-content;
-        overflow-y: auto;
+        .table-container {
+            max-height: 200px;
+            max-width: fit-content;
+            overflow-y: auto;
 
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-      .table-container thead {
-        position: sticky;
-        top: 0;
-        background-color: #31b2b0;
-      }
+        .table-container thead {
+            position: sticky;
+            top: 0;
+            background-color: #31b2b0;
+        }
 
-      .result-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-      .result-table th,
-      .result-table td {
-        padding: 10px;
-        border: 1px solid #ccc;
-      }
+        .result-table th,
+        .result-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
 
-      /* Estilos para los botones de acción */
-      .action-buttons {
-        display: flex;
-        gap: 5px;
-      }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
 
-      .action-buttons button {
-        padding: 5px 10px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        cursor: pointer;
-      }
+        .action-buttons button {
+            padding: 5px 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
 
-      .action-buttons button:hover {
-        background-color: #45a049;
-      }
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
 
-      .footer {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        color: #800080;
-        font-size: 12px;
-      }
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            text-align: center;
+            display: none;
+        }
 
-      .heart {
-        color: #800080;
-      }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #800080;
+            font-size: 12px;
+        }
 
-      .response-container {
-        margin-top: 20px;
-        padding: 10px;
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        text-align: center;
-        display: none;
-      }
+        .heart {
+            color: #800080;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
-    <div
-      class="header"
-      onclick="window.location.href='http://localhost:5000/';"
-    >
-      <h1>BiblioXpert</h1>
+<body>
+    <div class="header" onclick="window.location.href='http://localhost:5000/';">
+        <h1>BiblioXpert</h1>
     </div>
     <div class="form-container">
-      <form
-        id="buscar-prestamos-form"
-        method="POST"
-        action="{{ url_for('api_biblioteca.buscar_prestamos') }}"
-      >
-        <label for="dni" class="form-label">DNI:</label>
-        <input type="text" id="dni" name="dni" class="form-input" />
+        <form id="buscar-prestamos-form" method="POST" action="{{ url_for('api_biblioteca.buscar_prestamos') }}">
+            <label for="dni" class="form-label">DNI:</label>
+            <input type="text" id="dni" name="dni" class="form-input" />
 
-        <button type="submit" class="form-button">Buscar</button>
-        <div id="response-container" class="response-container"></div>
-      </form>
+            <button type="submit" class="form-button">Buscar</button>
+        </form>
     </div>
     <div class="table-container">
-      <table id="result-table" class="result-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Nombre</th>
-            <th>Devuelto</th>
-            <th>Días restantes</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="result-list"></tbody>
-      </table>
+        <table id="result-table" class="result-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Nombre</th>
+                    <th>Devuelto</th>
+                    <th>Días restantes</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="result-list"></tbody>
+        </table>
     </div>
 
     <div class="footer">Made with <span class="heart">♥</span> by Erika</div>
     <script>
-      document
-        .getElementById("buscar-prestamos-form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
+        document
+            .getElementById("buscar-prestamos-form")
+            .addEventListener("submit", function (event) {
+                event.preventDefault();
 
-          var form = event.target;
-          var formData = new FormData(form);
+                var form = event.target;
+                var formData = new FormData(form);
+                var responseContainer = document.getElementById("response-container");
 
-          var xhr = new XMLHttpRequest();
-          xhr.open("POST", "{{ url_for('api_biblioteca.buscar_prestamos') }}");
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-              if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                console.log(response);
-                var resultList = document.getElementById("result-list");
-                resultList.innerHTML = "";
-
-                if (response.length === 0) {
-                  var listItem = document.createElement("tr");
-                  var noResultsCell = document.createElement("td");
-                  noResultsCell.textContent = "No se han encontrado libros";
-                  noResultsCell.colSpan = 6;
-                  listItem.appendChild(noResultsCell);
-                  resultList.appendChild(listItem);
-                } else {
-                  response.forEach(function (prestamo) {
-                    var listItem = document.createElement("tr");
-
-                    var idCell = document.createElement("td");
-                    idCell.textContent = prestamo.id;
-                    listItem.appendChild(idCell);
-
-                    var tituloCell = document.createElement("td");
-                    tituloCell.textContent = prestamo.titulo;
-                    listItem.appendChild(tituloCell);
-
-                    var nombreCell = document.createElement("td");
-                    nombreCell.textContent = prestamo.nombre;
-                    listItem.appendChild(nombreCell);
-
-                    var devueltoCell = document.createElement("td");
-                    devueltoCell.textContent = prestamo.devuelto;
-                    listItem.appendChild(devueltoCell);
-
-                    var diasRestantesCell = document.createElement("td");
-                    diasRestantesCell.textContent = prestamo.dias_restantes;
-                    listItem.appendChild(diasRestantesCell);
-
-                    var accionesCell = document.createElement("td");
-
-                    var devolverButton = document.createElement("button");
-                    devolverButton.textContent = "Devolver";
-                    devolverButton.addEventListener("click", function () {
-                      var prestamo_id = prestamo.id;
-                      var xhr = new XMLHttpRequest();
-                      xhr.open(
-                        "POST",
-                        "{{ url_for('api_biblioteca.devolver_prestamo') }}"
-                      );
-                      xhr.setRequestHeader("Content-Type", "application/json");
-                      xhr.onreadystatechange = function () {
-                        if (xhr.readyState === XMLHttpRequest.DONE) {
-                          if (xhr.status === 200) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{{ url_for('api_biblioteca.buscar_prestamos') }}");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
                             var response = JSON.parse(xhr.responseText);
-                            var message = response.Mensaje;
-                            var responseContainer =
-                              document.getElementById("response-container");
-                            responseContainer.textContent = message;
-                            responseContainer.style.display = "block";
-                            setTimeout(function () {
-                              responseContainer.style.display = "none";
-                            }, 3000);
-                          } else {
-                            var response = JSON.parse(xhr.responseText);
-                            var message = response.Mensaje;
-                            var responseContainer =
-                              document.getElementById("response-container");
-                            responseContainer.textContent = message;
-                            responseContainer.style.display = "block";
-                            setTimeout(function () {
-                              responseContainer.style.display = "none";
-                            }, 3000);
-                          }
+                            console.log(response);
+                            var resultList = document.getElementById("result-list");
+                            resultList.innerHTML = "";
+
+                            if (response.length === 0) {
+                                var listItem = document.createElement("tr");
+                                var noResultsCell = document.createElement("td");
+                                noResultsCell.textContent = "No se han encontrado préstamos";
+                                noResultsCell.colSpan = 6;
+                                listItem.appendChild(noResultsCell);
+                                resultList.appendChild(listItem);
+                            } else {
+                                response.forEach(function (prestamo) {
+                                    var listItem = document.createElement("tr");
+
+                                    var idCell = document.createElement("td");
+                                    idCell.textContent = prestamo.id;
+                                    listItem.appendChild(idCell);
+
+                                    var tituloCell = document.createElement("td");
+                                    tituloCell.textContent = prestamo.titulo;
+                                    listItem.appendChild(tituloCell);
+
+                                    var nombreCell = document.createElement("td");
+                                    nombreCell.textContent = prestamo.nombre;
+                                    listItem.appendChild(nombreCell);
+
+                                    var devueltoCell = document.createElement("td");
+                                    devueltoCell.textContent = prestamo.devuelto;
+                                    listItem.appendChild(devueltoCell);
+
+                                    var diasRestantesCell = document.createElement("td");
+                                    diasRestantesCell.textContent = prestamo.dias_restantes;
+                                    listItem.appendChild(diasRestantesCell);
+
+                                    var accionesCell = document.createElement("td");
+
+                                    var devolverButton = document.createElement("button");
+                                    devolverButton.textContent = "Devolver";
+                                    devolverButton.addEventListener("click", function () {
+                                        var prestamo_id = prestamo.id;
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.open(
+                                            "POST",
+                                            "{{ url_for('api_biblioteca.devolver_prestamo') }}"
+                                        );
+                                        xhr.setRequestHeader("Content-Type", "application/json");
+                                        xhr.onreadystatechange = function () {
+                                            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                                                var listItem = document.createElement("tr");
+                                                var noResultsCell = document.createElement("td");
+                                                noResultsCell.textContent = "Se ha devuelto el préstamo correctamente";
+                                                noResultsCell.colSpan = 6;
+                                                listItem.appendChild(noResultsCell);
+
+                                                var currentRow = devolverButton.parentNode.parentNode;
+
+                                                currentRow.parentNode.replaceChild(listItem, currentRow);
+                                            }
+                                        };
+                                        var data = { id: prestamo_id };
+                                        xhr.send(JSON.stringify(data));
+                                    });
+
+                                    accionesCell.appendChild(devolverButton);
+
+                                    var borrarButton = document.createElement("button");
+                                    borrarButton.textContent = "Borrar";
+                                    function borrarPrestamo(id, fila) {
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.open("POST", "{{ url_for('api_biblioteca.borrar_prestamo') }}");
+                                        xhr.setRequestHeader("Content-Type", "application/json");
+                                        xhr.onreadystatechange = function () {
+                                            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                                                fila.remove();
+                                            }
+                                        };
+                                        var data = { id: id };
+                                        xhr.send(JSON.stringify(data));
+                                    }
+                                    borrarButton.addEventListener("click", function () {
+                                        var fila = this.parentNode.parentNode;
+                                        borrarPrestamo(prestamo.id, fila);
+                                    });
+                                    accionesCell.appendChild(borrarButton);
+
+                                    listItem.appendChild(accionesCell);
+
+                                    resultList.appendChild(listItem);
+                                });
+                            }
+                        } else {
+                            console.error(xhr.status);
                         }
-                      };
-                      var data = { id: prestamo_id };
-                      xhr.send(JSON.stringify(data));
-                    });
-                    accionesCell.appendChild(devolverButton);
-
-                    var borrarButton = document.createElement("button");
-                    borrarButton.textContent = "Borrar";
-                    function borrarPrestamo(id, fila) {
-                      var xhr = new XMLHttpRequest();
-                      xhr.open(
-                        "POST",
-                        "{{ url_for('api_biblioteca.borrar_prestamo') }}"
-                      );
-                      xhr.setRequestHeader("Content-Type", "application/json");
-                      xhr.onreadystatechange = function () {
-                        if (xhr.readyState === XMLHttpRequest.DONE) {
-                          if (xhr.status === 200) {
-                            var response = JSON.parse(xhr.responseText);
-                            fila.remove();
-
-                            var response = JSON.parse(xhr.responseText);
-                            var message = response.Mensaje;
-                            var responseContainer =
-                              document.getElementById("response-container");
-                            responseContainer.textContent = message;
-                            responseContainer.style.display = "block";
-                            setTimeout(function () {
-                              responseContainer.style.display = "none";
-                            }, 3000);
-                          } else {
-                            var response = JSON.parse(xhr.responseText);
-                            var message = response.Mensaje;
-                            var responseContainer =
-                              document.getElementById("response-container");
-                            responseContainer.textContent = message;
-                            responseContainer.style.display = "block";
-                            setTimeout(function () {
-                              responseContainer.style.display = "none";
-                            }, 3000);
-                          }
-                        }
-                      };
-                      var data = { id: id };
-                      xhr.send(JSON.stringify(data));
                     }
-                    borrarButton.addEventListener("click", function () {
-                      var fila = this.parentNode.parentNode;
-                      borrarPrestamo(prestamo.id, fila);
-                    });
-                    accionesCell.appendChild(borrarButton);
-
-                    listItem.appendChild(accionesCell);
-
-                    resultList.appendChild(listItem);
-                  });
-                }
-              } else {
-                console.error(xhr.status);
-              }
-            }
-          };
-          xhr.send(formData);
-        });
+                };
+                xhr.send(formData);
+            });
     </script>
-  </body>
+</body>
+
 </html>

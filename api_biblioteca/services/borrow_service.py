@@ -30,10 +30,10 @@ class BorrowService:
         return prestamo
 
     @staticmethod
-    def buscar_prestamo(dni):
+    def buscar_prestamos(dni):
         clientes = ClientService.buscar_clientes(None, dni, None, None)
 
-        prestamos = None
+        prestamos = []
 
         if len(clientes) > 0:
             prestamos = (

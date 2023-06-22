@@ -1,178 +1,178 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Proyecto Erika - Nuevo Préstamo</title>
     <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        overflow: hidden;
-      }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
 
-      .header {
-        font-size: 24px;
-        text-align: center;
-        margin-bottom: 20px;
-      }
+        .header {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-      .header h1 {
-        font-size: 36px;
-        color: #800080;
-        transition: color 0.3s;
-      }
+        .header h1 {
+            font-size: 36px;
+            color: #800080;
+            transition: color 0.3s;
+        }
 
-      .header h1:hover {
-        color: black;
-      }
+        .header h1:hover {
+            color: black;
+            cursor: pointer;
+        }
 
-      .form-container {
-        display: flex;
-        align-items: center;
-        width: 800px;
-        margin-bottom: 20px;
-      }
+        .form-container {
+            width: 300px;
+            margin-bottom: 20px;
+        }
 
-      .form-container table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-      .form-label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
 
-      .form-button {
-        padding: 10px 20px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        cursor: pointer;
-      }
+        .form-button {
+            padding: 10px 20px;
+            background-color: #7b7d7b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
 
-      .form-button:disabled {
-        background-color: gray;
-        cursor: not-allowed;
-      }
+        .form-button.enabled {
+            background-color: #4caf50;
+            cursor: pointer;
+        }
 
-      .form-button:hover:not(:disabled) {
-        background-color: #45a049;
-      }
+        .result-list {
+            width: 300px;
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
 
-      /* Estilos para la tabla */
-      .table-container {
-        max-height: 200px;
-        max-width: fit-content;
-        overflow-y: auto;
+        .result-item {
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
 
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
+        .table-container {
+            max-height: 200px;
+            max-width: fit-content;
+            overflow-y: auto;
 
-      .table-container thead {
-        position: sticky;
-        top: 0;
-        background-color: #31b2b0;
-      }
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-      .result-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+        .table-container thead {
+            position: sticky;
+            top: 0;
+            background-color: #31b2b0;
+        }
 
-      .result-table th,
-      .result-table td {
-        padding: 10px;
-        border: 1px solid #ccc;
-      }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-      /* Estilos para los botones de acción */
-      .action-buttons {
-        display: flex;
-        gap: 5px;
-      }
+        .result-table th,
+        .result-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
 
-      .action-buttons button {
-        padding: 5px 10px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-        cursor: pointer;
-      }
+        .result-table tr:hover {
+            background-color: #aaefc0;
+            cursor: pointer;
+        }
 
-      .action-buttons button:hover {
-        background-color: #45a049;
-      }
+        .result-table tr.selected {
+            background-color: #0be763;
+            cursor: pointer;
+        }
 
-      .footer {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        color: #800080;
-        font-size: 12px;
-      }
-      
-      .response-container {
-        margin-top: 20px;
-        padding: 10px;
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        text-align: center;
-        display: none;
-      }
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            text-align: center;
+            display: none;
+        }
 
-      .heart {
-        color: #800080;
-      }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #800080;
+            font-size: 12px;
+        }
+
+        .heart {
+            color: #800080;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
-    <div
-      class="header"
-      onclick="window.location.href='http://localhost:5000/';"
-    >
-      <h1>BiblioXpert</h1>
+<body>
+    <div class="header" onclick="window.location.href='http://localhost:5000/';">
+        <h1>BiblioXpert</h1>
     </div>
     <div>
-      <label for="dni" class="form-label">DNI: {{cliente.dni}}</label><br />
-      <label for="dni" class="form-label">Nombre: {{cliente.nombre}}</label
-      ><br />
-      <label for="dni" class="form-label">Teléfono: {{cliente.telefono}}</label>
+        <label for="dni" class="form-label">DNI: {{cliente.dni}}</label><br />
+        <label for="dni" class="form-label">Nombre: {{cliente.nombre}}</label><br />
+        <label for="dni" class="form-label">Teléfono: {{cliente.telefono}}</label>
     </div>
     <div class="table-container">
-      <table id="result-table" class="result-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Título</th>
-          </tr>
-        </thead>
-        <tbody id="libros-table">
-          {% for libro in libros %}
-          <tr class="libro-item" data-id="{{ libro.id }}">
-            <td>{{ libro.id }}</td>
-            <td>{{ libro.titulo }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        <table id="result-table" class="result-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                </tr>
+            </thead>
+            <tbody id="libros-table">
+                {% for libro in libros %}
+                <tr class="libro-item" data-id="{{ libro.id }}">
+                    <td>{{ libro.id }}</td>
+                    <td>{{ libro.titulo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
+    <br>
     <button id="realizar-prestamo-button" class="form-button" disabled>
-      Realizar préstamo
+        Realizar préstamo
     </button>
 
     <div id="response-container" class="response-container"></div>
@@ -180,72 +180,75 @@
     <div class="footer">Made with <span class="heart">♥</span> by Erika</div>
 
     <script>
-      var urlParams = new URLSearchParams(window.location.search);
-      var selectedClienteId = urlParams.get("cliente_id");
-      var selectedLibroId = null;
+        var urlParams = new URLSearchParams(window.location.search);
+        var selectedClienteId = urlParams.get("cliente_id");
+        var selectedLibroId = null;
 
-      // Agregar evento de clic a las filas de la tabla
-      var libroItems = document.querySelectorAll(".libro-item");
-      libroItems.forEach(function (item) {
-        item.addEventListener("click", function () {
-          var libroId = item.dataset.id;
-          var selectedLibroItem = document.querySelector(
-            ".libro-item.selected"
-          );
+        var libroItems = document.querySelectorAll(".libro-item");
+        libroItems.forEach(function (item) {
+            item.addEventListener("click", function () {
+                var libroId = item.dataset.id;
+                var selectedLibroItem = document.querySelector(
+                    ".libro-item.selected"
+                );
 
-          if (selectedLibroItem) {
-            selectedLibroItem.classList.remove("selected");
-          }
+                if (selectedLibroItem) {
+                    selectedLibroItem.classList.remove("selected");
+                }
 
-          item.classList.add("selected");
-          selectedLibroId = libroId;
-          enablePrestamoButton();
+                item.classList.add("selected");
+                selectedLibroId = libroId;
+                selectedLibroId = item.dataset.id;
+                enablePrestamoButton();
+            });
         });
-      });
 
-      function enablePrestamoButton() {
-        var prestamoButton = document.getElementById(
-          "realizar-prestamo-button"
-        );
-        prestamoButton.disabled = !selectedLibroId;
-      }
-
-      var responseContainer = document.getElementById("response-container");
-      responseContainer.style.display = "block";
-
-      var realizarPrestamoButton = document.getElementById(
-        "realizar-prestamo-button"
-      );
-
-      realizarPrestamoButton.addEventListener("click", function () {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "{{ url_for('api_biblioteca.nuevo_prestamo') }}");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-              var response = JSON.parse(xhr.responseText);
-              var message = response.Mensaje;              
-              responseContainer.textContent = message;
-              setTimeout(function () {
-                responseContainer.style.display = "none";
-              }, 3000);
+        function enablePrestamoButton() {
+            var prestamoButton = document.getElementById(
+                "realizar-prestamo-button"
+            );
+            if (selectedLibroId) {
+                prestamoButton.classList.add("enabled");
             } else {
-              var response = JSON.parse(xhr.responseText);
-              var message = response.Mensaje;
-              responseContainer.textContent = message;
-              setTimeout(function () {
-                responseContainer.style.display = "none";
-              }, 3000);
+                prestamoButton.classList.remove("enabled");
             }
-          }
-        };
-        var data = {
-            id_cliente: selectedClienteId,
-            id_libro: selectedLibroId,
-          };
-        xhr.send(JSON.stringify(data));
-      });
+            prestamoButton.disabled = !selectedLibroId;
+        }
+
+        var realizarPrestamoButton = document.getElementById(
+            "realizar-prestamo-button"
+        );
+
+        realizarPrestamoButton.addEventListener("click", function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('api_biblioteca.nuevo_prestamo') }}");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var response = JSON.parse(xhr.responseText);
+                    var message = response.Mensaje;
+
+                    var responseContainer = document.getElementById("response-container");
+                    responseContainer.style.display = "block";
+
+                    setTimeout(function () {
+                        responseContainer.style.display = "none";
+                    }, 3000);
+
+                    if (xhr.status === 200) {
+                        responseContainer.textContent = message;
+                    } else {
+                        responseContainer.textContent = message;
+                    }
+                }
+            };
+            var data = {
+                id_cliente: selectedClienteId,
+                id_libro: selectedLibroId,
+            };
+            xhr.send(JSON.stringify(data));
+        });
     </script>
-  </body>
+</body>
+
 </html>

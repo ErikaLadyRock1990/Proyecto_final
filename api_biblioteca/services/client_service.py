@@ -1,9 +1,16 @@
 from api_biblioteca.models import Cliente, db
+from flask import jsonify
 
 
 class ClientService:
     @staticmethod
     def guardar_cliente(dni, nombre, telefono):
+        dni = dni.upper()
+        ya_existe_dni = Cliente.query.filter(Cliente.dni.ilike(f"{dni}")).exists()
+
+        if ya_existe_dni == True:
+            return "Ya existe un cliente con ese DNI"
+        
         nuevo_cliente = Cliente(dni=dni, nombre=nombre, telefono=telefono)
         db.session.add(nuevo_cliente)
         db.session.commit()
@@ -42,15 +49,19 @@ class ClientService:
         cliente = Cliente.query.get(id)
 
         if not cliente:
-            return None
+            return "No se ha encontrado el cliente"      
 
         if dni:
+            dni = dni.upper()
             cliente.dni = dni
         if nombre:
             cliente.nombre = nombre
         if telefono:
             cliente.telefono = telefono
 
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            return "Ya existe un cliente con ese DNI"
 
         return cliente

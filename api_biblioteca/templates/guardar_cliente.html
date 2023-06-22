@@ -29,6 +29,7 @@
 
         .header h1:hover {
             color: black;
+            cursor: pointer;
         }
 
         .form-container {
@@ -60,6 +61,19 @@
             text-decoration: none;
             transition: background-color 0.3s;
             cursor: pointer;
+        }        
+
+        .form-button:hover {
+            background-color: #45a049;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            text-align: center;
+            display: none;
         }
 
         .footer {
@@ -74,18 +88,7 @@
             color: #800080;
         }
 
-        .form-button:hover {
-            background-color: #45a049;
-        }
-
-        .response-container {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f2f2f2;
-            text-align: center;
-            display: none;
-        }
+    </style>
     </style>
 </head>
 
@@ -119,30 +122,26 @@
             var form = event.target;
             var data = new FormData(form);
 
+            var responseContainer = document.getElementById("response-container");
+
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "{{ url_for('api_biblioteca.guardar_cliente') }}");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var response = JSON.parse(xhr.responseText);
+                    var message = response.Mensaje;
+
+                    responseContainer.style.display = "block";
+
+                    setTimeout(function () {
+                        responseContainer.style.display = "none";
+                    }, 3000);
+
                     if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        var message = response.Mensaje;
-
-                        var responseContainer = document.getElementById("response-container");
                         responseContainer.textContent = message;
-                        responseContainer.style.display = "block";
-                        setTimeout(function() {
-                            responseContainer.style.display = "none";
-                        }, 3000);
+
                     } else {
-                        var response = JSON.parse(xhr.responseText);
-                        var message = response.Mensaje;
-
-                        var responseContainer = document.getElementById("response-container");
                         responseContainer.textContent = message;
-                        responseContainer.style.display = "block";
-                        setTimeout(function() {
-                            responseContainer.style.display = "none";
-                        }, 3000);
                     }
                 }
             };
