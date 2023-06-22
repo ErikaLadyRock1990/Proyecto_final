@@ -126,6 +126,7 @@ def guardar_cliente():
 def buscar_clientes():
     if request.method == "GET":
         return render_template("buscar_clientes.html")
+    
     elif request.method == "POST":
         id = request.form.get("id")
         dni = request.form.get("dni")
@@ -142,13 +143,13 @@ def buscar_clientes():
         clientes_json = []
 
         for cliente in clientes:
-            libro_json = {
+            cliente_json = {
                 "id": cliente.id,
                 "dni": cliente.dni,
                 "nombre": cliente.nombre,
                 "telefono": cliente.telefono,
             }
-            clientes_json.append(libro_json)
+            clientes_json.append(cliente_json)
 
     return json.dumps(clientes_json)
 
@@ -203,28 +204,29 @@ def nuevo_prestamo():
     elif request.method == "POST":
         id_cliente = request.json.get("id_cliente")
         id_libro = request.json.get("id_libro")
-
+        
+        print(id_cliente, id_libro)
+        
         prestamo = BorrowService.nuevo_prestamo(id_cliente, id_libro)
 
         if not prestamo:
             return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
 
 
-        return jsonify({"Mensaje": "El libro o el cliente no están disponibles"})
-    return jsonify({"Mensaje": "Préstamo guardado correctamente"})
+        return jsonify({"Mensaje": "Préstamo guardado correctamente"})
 
 
 @bp.route("/buscar-prestamos", methods=["GET", "POST"])
-def buscar_prestamos():
-    
+def buscar_prestamos():    
     if request.method == "GET":
         return render_template("buscar_prestamos.html")
+    
     elif request.method == "POST":
-        dni = request.json.get("dni")
+        dni = request.form.get("dni")
         
         prestamos = BorrowService.buscar_prestamo(dni)
 
-        if not prestamos:
+        if len(prestamos) == 0:
             return jsonify({"Mensaje": "No se han encontrado préstamos"})
 
         prestamos_json = []
@@ -249,8 +251,8 @@ def buscar_prestamos():
             }
             prestamos_json.append(prestamo_json)
 
-        return json.dumps(prestamo_json)
-    return render_template("buscar_prestamos.html")
+    return json.dumps(prestamos_json)
+    
 
 @bp.route("/borrar-prestamo", methods=["POST"])
 def borrar_prestamo():
