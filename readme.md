@@ -1,4 +1,4 @@
-<h1>APLICACIÓN WEB DE UNA BIBLIOTECA "BiblioXpert</h1>
+<h1>APLICACIÓN WEB DE UNA BIBLIOTECA "BiblioXpert"</h1>
 
 <p>Programa hecho en python con el framework flask.</p>
 <h2>Descripción de la Api:</h2>
