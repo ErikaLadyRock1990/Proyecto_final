@@ -1,4 +1,4 @@
-<h1>API WEB DE UNA BIBLIOTECA</h1>
+<h1>APLICACIÓN WEB DE UNA BIBLIOTECA "BiblioXpert</h1>
 
 <p>Programa hecho en python con el framework flask.</p>
 <h2>Descripción de la Api:</h2>
@@ -35,160 +35,119 @@
 <pre><code>flask --app main --debug run</code></pre>
 
 
-<p>Esta Api trabaja en formato ".json", a continuación vamos a explicar los endpoint del proyecto:</p>
+<p>Esta Api trabaja en formato ".json", a continuación vamos a explicar como funciona el proyecto:</p>
 
-<p>Las peticiones han sido realizadas en Insomnia, asegurarse que los <em>"headers"</em> sean <code>Content-Type: application/json</code>.</p>
 
 
 <h2>AGREGAR UN NUEVO CLIENTE</h2>
 
-<p>La ruta para este enpoint es la siguiente: "/guardar-cliente"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
+<p>La ruta para guardar cliente es la siguiente: "/guardar-cliente"</p>
+<p>La petición para este formulario tiene los siguientes parámetros obligatorios:</p>
 <pre><code>{
-  "dni": "0xxxxxxxR",
-  "nombre": "Test",
-  "telefono": 6xxxxxxxx
+ DNI
+ Nombre
+ Teléfono
+
 }</code></pre>
 
-<p>Esto agregará un nuevo cliente a la tabla "Crear Cliente"</p>
+<p>Esto agregará un nuevo cliente a la tabla "Cliente"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 
 <h2>BUSCAR CLIENTES</h2>
 
-<p>La ruta para este enpoint es la siguiente: "/buscar-clientes"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "dni": "5xxxxxxxC",
-  "id": 2,
-  "nombre": "Test",
-  "telefono": 6xxxxxxxx
-}</code></pre>
+<p>La ruta para buscar clientes es la siguiente: "/buscar-clientes"</p>
+<p>Se puede realizar la búsqueda de cualquier cliente únicamente pulsando el botón de Buscar, donde aparecerán todos los clientes registrados en la base de datos. También se pude realizar a búsqueda introduciendo un único dato de los anteriores (Dni, nombre y/o teléfono) o varios, para que la búsqueda sea más específica.</p>
 
-<p>Esto buscará un cliente según su "id", "dni", "nombre" y/o "teléfono" en la tabla "Buscar Clientes"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 
 <h2>BORRAR CLIENTE</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/borrar-cliente"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "id": 4
-}</code></pre>
+<p>Para borrar clientes primero es necesario acceder a la ruta: "/buscar-clientes" y darle al botón Buscar. Una vez encontrado el cliente deseado, se hará una llamada al endpoint :"/borrar_cliente", al cual se le pasará el Id del cliente seleccionado y esto lo borrará de la base de datos.</p>
 
-<p>Esto borrará el cliente con ese id asignado, en la tabla "Borrar Cliente"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
+
 
 
 <h2>ACTUALIZAR CLIENTE</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/actualizar-cliente"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "dni": "5XXXXXXXB",
-  "id": 2,
-  "nombre": "Test",
-  "telefono": 6xxxxxxxx
-}</code></pre>
+<p>Para actualizar clientes primero es necesario acceder a la ruta: "/buscar-clientes" y darle al botón de Buscar. Una vez encontrado el cliente deseado, se hará una llamada al endpoint :"/actualizar_cliente", esto le llevará a una nueva pantalla donde se pasará el dato que se desee actualizar, pudiendo ser dni, nombre o teléfono.
+Esto dejará actualizada la información de los clientes en la tabla "Cliente" </p>
 
-<p>Se podrá modificar cualquiera de estos campos por la información correcta o nueva, quedando así actualizada en la tabla "Actualizar Cliente". El id es obligatorio y no se puede modificar.</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
+
 
 
 <h2>GUARDAR LIBRO</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/guardar-libro"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
+<p>La ruta para guardar libro es la siguiente: "/guardar-libro"</p>
+<p>La petición para este formulario tiene los siguientes parámetros obligatorios:</p>
 <pre><code>{
-  "autor": "Stephanie Meyer",
-  "año": 2006,
-  "genero": "Fantasía, Juvenil",
-  "titulo": "Crepúsculo"
+ Título
+ Autor
+ Género
+ Año
+
 }</code></pre>
 
-<p>Esto agregará un nuevo libro a la tabla "Guardar Libro"</p>
+<p>Esto agregará un nuevo libro a la tabla "Libro"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 
 <h2>BUSCAR LIBROS</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/buscar-libros"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "autor": "Stephen King",
-  "año": 1986,
-  "genero": "Terror",
-  "id": 6,
-  "titulo": "It"
-}</code></pre>
+<p>La ruta para buscar libros es la siguiente: "/buscar-libros"</p>
+<p>Se puede realizar la búsqueda de cualquier libro únicamente pulsando el botón de Buscar, donde aparecerán todos los ejemplares disponibles en la base de datos. También se pude realizar a búsqueda introduciendo un único dato de los anteriores (Título, autor, género o año) o varios, para que la búsqueda sea más específica.</p>
 
-<p>Se puede realizar la búsqueda por cualquiera de esos campos en la tabla "Buscar Libro"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 
 <h2>BORRAR LIBRO</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/borrar-libro"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "id": 8
-}</code></pre>
+<p>Para borrar libros primero es necesario acceder a la ruta: "/buscar-libros" y darle al botón Buscar. Una vez encontrado el libro deseado, se hará una llamada al endpoint :"/borrar_libro", al cual se le pasará el Id del libro seleccionado y esto lo borrará de la base de datos.</p>
 
-<p>Esto borrará el libro con ese id asignado, en la tabla "Borrar Libro"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
+
 
 
 <h2>ACTUALIZAR LIBRO</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/actualizar-libro"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "id": 1,
-  "titulo": "Harry Potter y La Piedra Filosofal",
-  "genero": "Fantasía",
-  "autor": "J.K.Rowling",
-  "año": 1997
-}</code></pre>
+<p>Para actualizar libros primero es necesario acceder a la ruta: "/buscar-libros" y darle al botón de Buscar. Una vez encontrado el libro deseado, se hará una llamada al endpoint :"/actualizar_libro", esto le llevará a una nueva pantalla donde se pasará el dato o datos que se deseen actualizar, pudiendo ser título, autor, género y/o año </p>
 
-<p>Se podrá modificar cualquiera de estos campos por la información correcta o nueva, quedando así actualizada en la tabla "Actualizar Libro". El id es obligatorio y no puede modificarse.</p>
+<p>Se podrá modificar cualquiera de estos campos por la información correcta o nueva, quedando así actualizada en la tabla "Libro"</p>
+
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
+
 
 
 <h2>AGREGAR UN NUEVO PRÉSTAMO</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/nuevo-prestamo"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "id_cliente": 3,
-  "id_libro": 8
-}</code></pre>
+<p>Para realizar un nuevo préstamo primero es necesario acceder a la ruta: "/buscar-clientes" y darle al botón Buscar. Una vez encontrado el cliente deseado, se hará una llamada al endpoint :"/nuevo-prestamo", esto llevará a una nueva pantalla donde aparecerán los datos del cliente y, debajo, una tabla con todos los libros disponibles para prestar. Una vez seleccionado el libro deseado y pinchando sobre éste, se procederá a pulsar el botón de Realizar Préstamo.Se pueden prestar varios libros a un mismo cliente, que no estén en préstamo en ese momento. </p>
 
-<p>Con estos dos datos quedará registrado el préstamo del libro, con los datos de ese cliente y durante cuántos días se mantendrá activo, en la tabla "Nuevo Préstamo"</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 
-<h2>BUSCAR PRÉSTAMO</h2>
+<h2>BUSCAR PRÉSTAMOS</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/buscar-prestamos"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "dni": "5XXXXXXXB"
-}</code></pre>
+<p>La ruta para buscar préstamos es la siguiente: "/buscar-prestamos"</p>
+<p>Se puede realizar la búsqueda de cualquier préstamo únicamente pulsando el botón de Buscar, donde aparecerán todos los prestamos realizados hasta la fecha en la base de datos.También aparecerán datos informativos como cúantos días de préstamo le quedan a ese cliente y si ya está devuelto o no.</p>
 
-<p>La búsqueda sólo puede ser realizada con el dni del cliente, donde después se verá reflejada toda la información del préstamo realizado por cliente, en la tabla "Buscar Préstamo"</p>
+<p>La búsqueda también puede ser realizada con el dni del cliente, donde después se verá reflejada toda la información del préstamo realizado por cliente, en la tabla "Prestamo"</p>
 
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 <h2>BORRAR PRÉSTAMO</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/borrar-prestamo"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "id": 1
-}</code></pre>
+<p>Para borrar prestamos primero es necesario acceder a la ruta: "/buscar-prestamos" y darle al botón Buscar. Una vez encontrado el préstamo deseado, se hará una llamada al endpoint :"/borrar_prestamo", al cual se le pasará el Id del préstamo seleccionado y esto lo borrará de la base de datos.</p>
 
-<p>En este caso, se debe anular el préstamo con el id del mismo.</p>
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
 
 
 <h2>DEVOLVER PRÉSTAMO</h2>
 
-<p>La ruta para este endpoint es la siguiente: "/devolver-prestamo"</p>
-<p>La petición para este endpoint tiene la siguiente forma:</p>
-<pre><code>{
-  "id": 3
-}</code></pre>
+<p>Para devolver prestamos primero es necesario acceder a la ruta: "/buscar-prestamos" y darle al botón Buscar. Una vez encontrado el préstamo deseado, se hará una llamada al endpoint :"/devolver_prestamo", al cual se le pasará el Id del préstamo seleccionado y esto lo actualizará de la base de datos.</p>
 
-<p>Con el id del préstamo podemos darlo por finalizado, y en la tabla "Préstamos" la columna devuelto quedará a True, quedando reflejados los datos del cliente, del libro y el contador de días restante se quedará a cero.</p>
+<p>Con el id del préstamo podemos darlo por finalizado y aparecerá el mensaje de "Se ha devuelto el préstamo correctamente", y en la tabla "Préstamo" la columna devuelto quedará a True, quedando reflejados los datos del cliente, del libro y el contador de días restante se quedará a cero.</p>
 
-
+<p>Se puede volver a la pantalla principal pulsando "BiblioXpert</p>
